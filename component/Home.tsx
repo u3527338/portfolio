@@ -6,10 +6,10 @@ import { Mail } from "lucide-react";
 import Image from "next/image";
 import { FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa";
 
-export default function Hero() {
+export default function Home() {
     return (
-        <section className="relative h-screen w-full flex items-center bg-slate-950 px-6 lg:px-20 overflow-hidden">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full z-10">
+        <section className="relative h-full w-full flex items-center bg-slate-950 px-6 py-20 lg:px-32 overflow-hidden">
+            <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full z-10">
                 <motion.div
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}

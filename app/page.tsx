@@ -1,9 +1,9 @@
-import Hero from "@/component/Hero";
+import Home from "@/component/Home";
 
-export default function Home() {
+export default function Page() {
     return (
-        <main className="h-screen w-full overflow-hidden bg-slate-950">
-            <Hero />
+        <main className="h-full w-full overflow-hidden bg-slate-950">
+            <Home />
         </main>
     );
 }
