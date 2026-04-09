@@ -1,19 +1,34 @@
-"use client";
-
-import { motion } from "framer-motion";
+import { Metadata } from "next";
 import SkillSection from "./SkillSection";
 
-export default function Page() {
-    return (
-        <div className="w-full h-full max-w-6xl mx-auto flex flex-col justify-center px-4">
-            <motion.h2
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-2xl md:text-3xl font-bold text-white mb-6 text-center lg:text-left"
-            >
-                Technical <span className="text-blue-500">Skills</span>
-            </motion.h2>
-            <SkillSection />
-        </div>
+export const metadata: Metadata = {
+  title: "Technical Skills | SIU CHUN KIT",
+};
+
+async function getSkills() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/skills`,
+      {
+        cache: "no-store",
+      },
     );
+    if (!res.ok) return [];
+    return res.json();
+  } catch (e) {
+    return [];
+  }
+}
+
+export default async function Page() {
+  const skillGroups = await getSkills();
+
+  return (
+    <div className="w-full h-full max-w-6xl mx-auto flex flex-col justify-center px-4 py-10">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 text-center lg:text-left">
+        Technical <span className="text-blue-500">Skills</span>
+      </h2>
+      <SkillSection skillGroups={skillGroups} />
+    </div>
+  );
 }

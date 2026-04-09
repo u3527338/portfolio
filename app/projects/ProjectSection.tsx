@@ -65,7 +65,7 @@ export default function ProjectSection({
                             {filteredProjects.map((project, idx) => (
                                 <motion.div
                                     layout
-                                    key={project.id}
+                                    key={project._id}
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
@@ -83,7 +83,7 @@ export default function ProjectSection({
                                 >
                                     {/* Link for SEO Crawler (關鍵點：讓爬蟲能順著連結走) */}
                                     <Link
-                                        href={`/projects/${project.id}`}
+                                        href={`/projects/${project._id}`}
                                         className="absolute inset-0 z-30"
                                     >
                                         <span className="sr-only">
@@ -153,7 +153,7 @@ export default function ProjectSection({
                                                 <FaGithub size={18} />
                                             </a>
                                             <Link
-                                                href={`/projects/${project.id}`}
+                                                href={`/projects/${project._id}`}
                                                 className="p-3 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/10 hover:bg-white/20 transition-colors"
                                             >
                                                 <ExternalLink size={18} />
