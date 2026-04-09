@@ -10,4 +10,6 @@ const ExperienceSchema = new Schema({
   bgImage: String,
 });
 
-export default models.Experience || model("Experience", ExperienceSchema);
+const ExperienceModel = models.Experience || model("Experience", ExperienceSchema);
+
+export default ExperienceModel;

@@ -1,3 +1,5 @@
+import { connectDB } from "@/lib/mongodb";
+import ProjectModel from "@/models/Project";
 import { NextResponse } from "next/server";
 
 const allProjects = [
@@ -5,7 +7,8 @@ const allProjects = [
     _id: "e-invoice",
     title: "E-Invoice System",
     category: "Full-stack / Enterprise",
-    source: "Work @ Company A",
+    type: "Work",
+    source: "HKSTP",
     size: "large",
     image: "/image/project-1.png",
     tech: ["Next.js", "Express", "MySQL"],
@@ -14,7 +17,7 @@ const allProjects = [
     _id: "med-app",
     title: "Health Tracker",
     category: "Mobile App",
-    source: "Self-Learning",
+    type: "Self-Learning",
     size: "small",
     image: "/image/project-2.png",
     tech: ["React Native", "Firebase"],
@@ -23,7 +26,8 @@ const allProjects = [
     _id: "smart-card",
     title: "Smart Card Solution",
     category: "IoT / Security",
-    source: "Work @ Company A",
+    type: "Work",
+    source: "HKSTP",
     size: "small",
     image: "/image/project-3.png",
     tech: ["WebSocket", "Node.js"],
@@ -31,15 +35,17 @@ const allProjects = [
 ];
 
 export async function GET() {
-  //   try {
-  //     await connectDB();
+  try {
+    await connectDB();
 
-  //     // 使用模型查詢資料
-  //     const projects = await Project.find({});
+    const projects = await ProjectModel.find({});
 
-  //     return NextResponse.json(projects, { status: 200 });
-  //   } catch (error) {
-  //     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
-  //   }
-  return NextResponse.json(allProjects);
+    return NextResponse.json(projects, { status: 200 });
+  } catch (error) {
+    // return NextResponse.json(
+    //   { error: "Failed to fetch projects" },
+    //   { status: 500 },
+    // );
+    return NextResponse.json(allProjects);
+  }
 }

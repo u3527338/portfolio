@@ -30,7 +30,8 @@ export interface Project {
   _id: string;
   title: string;
   category: string;
-  source: string;
+  type: string;
+  source?: string;
   size: "large" | "small";
   image: string;
   tech: string[];

@@ -1,4 +1,6 @@
+import { connectDB } from "@/lib/mongodb";
 import { Experience } from "@/lib/types";
+import ExperienceModel from "@/models/Experience";
 import { NextResponse } from "next/server";
 
 export const experiences: Experience[] = [
@@ -53,15 +55,18 @@ export const experiences: Experience[] = [
 ];
 
 export async function GET() {
-  //   try {
-  //     await connectDB();
+  try {
+    await connectDB();
 
-  //     // 使用模型查詢資料
-  //     const projects = await Project.find({});
+    // 使用模型查詢資料
+    const projects = await ExperienceModel.find({});
 
-  //     return NextResponse.json(projects, { status: 200 });
-  //   } catch (error) {
-  //     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
-  //   }
+    return NextResponse.json(projects, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch projects" },
+      { status: 500 },
+    );
+  }
   return NextResponse.json(experiences);
 }

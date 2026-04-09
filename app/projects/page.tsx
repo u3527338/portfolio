@@ -24,7 +24,7 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <main className="h-full w-full overflow-hidden bg-slate-950">
+    <main className="h-full w-full overflow-hidden bg-slate-950 px-4">
       <ProjectSection initialProjects={projects} />
     </main>
   );

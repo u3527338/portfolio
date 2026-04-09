@@ -1,3 +1,5 @@
+import { connectDB } from "@/lib/mongodb";
+import SkillModel from "@/models/Skill";
 import { NextResponse } from "next/server";
 
 export const skillGroups = [
@@ -38,15 +40,13 @@ export const skillGroups = [
 ];
 
 export async function GET() {
-  //   try {
-  //     await connectDB();
+  try {
+    await connectDB();
 
-  //     // 使用模型查詢資料
-  //     const projects = await Project.find({});
+    const projects = await SkillModel.find({});
 
-  //     return NextResponse.json(projects, { status: 200 });
-  //   } catch (error) {
-  //     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
-  //   }
-  return NextResponse.json(skillGroups);
+    return NextResponse.json(projects, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(skillGroups);
+  }
 }

@@ -11,6 +11,6 @@ const ProjectSchema = new Schema(
   { timestamps: true },
 );
 
-const Project = models.Project || model("Project", ProjectSchema);
+const ProjectModel = models.Project || model("Project", ProjectSchema);
 
-export default Project;
+export default ProjectModel;
