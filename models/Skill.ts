@@ -1,21 +1,10 @@
-import { Schema, model, models } from "mongoose";
+import mongoose from "mongoose";
 
-const SkillItemSchema = new Schema({
-  name: { type: String, required: true },
-  level: { type: Number, required: true },
-  iconName: { type: String, required: true },
+const SkillSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    iconName: { type: String, required: true },
+    category: { type: String, required: true },
+    level: { type: Number, required: true },
 });
 
-const SkillGroupSchema = new Schema(
-  {
-    category: { type: String, required: true },
-    skills: [SkillItemSchema], // 嵌套陣列
-  },
-  {
-    timestamps: true,
-  },
-);
-
-const SkillModel = models.SkillGroup || model("SkillGroup", SkillGroupSchema);
-
-export default SkillModel;
+export default mongoose.models.Skill || mongoose.model("Skill", SkillSchema);

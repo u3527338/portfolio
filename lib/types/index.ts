@@ -31,11 +31,19 @@ export interface Project {
   title: string;
   category: string;
   type: string;
-  source?: string;
+  source?: string;       // 兼容舊數據 (例如 "HKSTP")
+  experienceId?: string; // 關聯 Experience 的 ID
   size: "large" | "small";
   image: string;
-  tech: string[];
+  tech: string[];        // 儲存 Skill 的名稱或 Slug (例如 ["NextJS / ReactJS"])
+  
+  // 以下是可選欄位，用於 API Join 之後存儲豐富的關聯資料
+  experience?: Experience;
+  techDetails?: Skill[];
+  github?: string;
+  link?: string;
 }
+
 
 // --- 通用型別 ---
 export type IconMapType = {
