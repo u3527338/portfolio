@@ -25,16 +25,23 @@ export const SelectField = ({ label, value, options, onChange }: any) => (
                 onChange={(e) => onChange(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-all text-white appearance-none cursor-pointer"
             >
-                {options.map((opt: string) => (
-                    <option key={opt} value={opt} className="bg-slate-900">
-                        {opt}
-                    </option>
-                ))}
+                {options.map((opt: any, index: number) => {
+                    // 核心修正：判斷 opt 係字串定係物件
+                    const isObject = typeof opt === "object" && opt !== null;
+                    const displayLabel = isObject ? opt.label : opt;
+                    const val = isObject ? opt.value : opt;
+
+                    return (
+                        <option
+                            key={index}
+                            value={val}
+                            className="bg-slate-900"
+                        >
+                            {displayLabel}
+                        </option>
+                    );
+                })}
             </select>
-            <ChevronDown
-                size={16}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-            />
         </div>
     </div>
 );

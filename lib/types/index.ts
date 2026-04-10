@@ -18,11 +18,13 @@ export interface Experience {
   title: string;
   company: string;
   location: string;
-  startDate: string; // ISO 格式 "YYYY-MM-DD"
-  endDate: string | null;
+  fromDate: string; // 對應後端數據
+  toDate: string | null; // 對應後端數據
   isCurrent: boolean;
   shortDesc: string;
-  bgImage: string; // 圖片路徑字串
+  bgImage: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // --- 作品集相關 (Project) ---

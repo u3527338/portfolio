@@ -17,13 +17,13 @@ export const ExperienceBackground = ({
         transition={{ duration: 0.8, ease: "easeInOut" }}
         className="relative h-full w-full"
       >
-        <Image
+        {/* <Image
           src={activeBg}
           alt="Work context"
           fill
           priority
           className="object-cover object-center"
-        />
+        /> */}
       </motion.div>
     </AnimatePresence>
   </div>
