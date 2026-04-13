@@ -1,44 +1,58 @@
 "use client";
 
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { MapPin } from "lucide-react";
+
 import { AdminListCard } from "@/component/AdminListCard";
 import { AdminSection } from "@/component/AdminSection";
 import { FormActions } from "@/component/FormActions";
 import { InputField, ProjectImageUpload } from "@/component/FormElements";
 import { ListActions } from "@/component/ListActions";
-import { MapPin } from "lucide-react";
-import { useState } from "react";
 import { useAdminData } from "../hook/useAdminData";
 
+const experienceSchema = z.object({
+    title: z.string().min(1, "Job title is required"),
+    company: z.string().min(1, "Company name is required"),
+    location: z.string().min(1, "Location is required"),
+    fromDate: z.string().min(1, "Start date is required"),
+    toDate: z.string(),
+    isCurrent: z.boolean().default(false),
+    shortDesc: z.string(),
+    bgImage: z.string(),
+});
+
+type ExperienceFormValues = z.infer<typeof experienceSchema>;
+
 export default function ExperienceAdminForm() {
-    const {
-        data: exps,
-        loading,
-        upsert,
-        uploadImage,
-        remove,
-    } = useAdminData("/api/experiences");
+    const { data: exps, loading, upsert, uploadImage, remove } = useAdminData("/api/experiences");
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    const [formData, setFormData] = useState({
-        title: "",
-        company: "",
-        location: "",
-        fromDate: "",
-        toDate: "",
-        isCurrent: false,
-        shortDesc: "",
-        bgImage: "",
+    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<ExperienceFormValues>({
+        resolver: zodResolver(experienceSchema) as any,
+        defaultValues: {
+            title: "",
+            company: "",
+            location: "",
+            fromDate: "",
+            toDate: "",
+            isCurrent: false,
+            shortDesc: "",
+            bgImage: "",
+        }
     });
+
+    const isCurrent = watch("isCurrent");
 
     const formatToMonth = (dateStr: string) => {
         if (!dateStr) return "";
         const d = new Date(dateStr);
-        return `${d.getFullYear()}-${(d.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}`;
+        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}`;
     };
 
     const handleFileChange = (file: File | null) => {
@@ -55,10 +69,15 @@ export default function ExperienceAdminForm() {
     const onEdit = (exp: any) => {
         setEditingId(exp._id);
         setImagePreview(exp.bgImage || null);
-        setFormData({
-            ...exp,
+        reset({
+            title: exp.title || "",
+            company: exp.company || "",
+            location: exp.location || "",
             fromDate: formatToMonth(exp.fromDate),
             toDate: formatToMonth(exp.toDate),
+            isCurrent: exp.isCurrent || false,
+            shortDesc: exp.shortDesc || "",
+            bgImage: exp.bgImage || "",
         });
     };
 
@@ -66,185 +85,74 @@ export default function ExperienceAdminForm() {
         setEditingId(null);
         setSelectedFile(null);
         setImagePreview(null);
-        setFormData({
-            title: "",
-            company: "",
-            location: "",
-            fromDate: "",
-            toDate: "",
-            isCurrent: false,
-            shortDesc: "",
-            bgImage: "",
-        });
+        reset();
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        let finalImageUrl = formData.bgImage;
-
+    const onSubmit: SubmitHandler<ExperienceFormValues> = async (data) => {
+        let finalImageUrl = data.bgImage;
         if (selectedFile) {
             finalImageUrl = await uploadImage(selectedFile, "experience");
         }
-
-        const success = await upsert(
-            { ...formData, bgImage: finalImageUrl },
-            editingId
-        );
-        if (success) onReset();
+        if (await upsert({ ...data, bgImage: finalImageUrl }, editingId)) {
+            onReset();
+        }
     };
 
     return (
         <AdminSection
             title={editingId ? "Edit Experience" : "Add New Experience"}
             form={
-                <form
-                    onSubmit={handleSubmit}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                >
+                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="md:col-span-2">
-                        <ProjectImageUpload
-                            preview={imagePreview}
-                            onFileChange={handleFileChange}
-                        />
+                        <ProjectImageUpload preview={imagePreview} onFileChange={handleFileChange} />
                     </div>
 
-                    <InputField
-                        label="Job Title"
-                        value={formData.title}
-                        onChange={(v: string) =>
-                            setFormData({ ...formData, title: v })
-                        }
-                    />
-                    <InputField
-                        label="Company Name"
-                        value={formData.company}
-                        onChange={(v: string) =>
-                            setFormData({ ...formData, company: v })
-                        }
-                    />
-                    <InputField
-                        label="Location"
-                        value={formData.location}
-                        onChange={(v: string) =>
-                            setFormData({ ...formData, location: v })
-                        }
-                    />
+                    <InputField label="Job Title" {...register("title")} error={errors.title?.message} />
+                    <InputField label="Company Name" {...register("company")} error={errors.company?.message} />
+                    <InputField label="Location" {...register("location")} error={errors.location?.message} />
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">
-                            From (Month/Year)
-                        </label>
-                        <input
-                            type="month"
-                            required
-                            value={formData.fromDate}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    fromDate: e.target.value,
-                                })
-                            }
-                            className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500 text-white"
-                        />
+                        <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">From (Month/Year)</label>
+                        <input type="month" {...register("fromDate")} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500 text-white" />
+                        {errors.fromDate && <span className="text-red-500 text-[10px]">{errors.fromDate.message}</span>}
                     </div>
 
-                    {!formData.isCurrent && (
+                    {!isCurrent && (
                         <div className="flex flex-col gap-2">
-                            <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">
-                                To (Month/Year)
-                            </label>
-                            <input
-                                type="month"
-                                value={formData.toDate}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        toDate: e.target.value,
-                                    })
-                                }
-                                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500 text-white"
-                            />
+                            <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">To (Month/Year)</label>
+                            <input type="month" {...register("toDate")} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500 text-white" />
                         </div>
                     )}
 
                     <div className="md:col-span-2 flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/5">
-                        <input
-                            type="checkbox"
-                            id="isCurrent"
-                            checked={formData.isCurrent}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    isCurrent: e.target.checked,
-                                })
-                            }
-                            className="w-4 h-4 accent-blue-600 cursor-pointer"
-                        />
-                        <label
-                            htmlFor="isCurrent"
-                            className="text-sm text-slate-300 cursor-pointer"
-                        >
-                            I currently work here
-                        </label>
+                        <input type="checkbox" id="isCurrent" {...register("isCurrent")} className="w-4 h-4 accent-blue-600 cursor-pointer" />
+                        <label htmlFor="isCurrent" className="text-sm text-slate-300 cursor-pointer">I currently work here</label>
                     </div>
 
                     <div className="md:col-span-2 flex flex-col gap-2">
-                        <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">
-                            Short Description
-                        </label>
-                        <textarea
-                            value={formData.shortDesc}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    shortDesc: e.target.value,
-                                })
-                            }
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 h-32 outline-none focus:border-blue-500 text-white resize-none"
-                            placeholder="Key responsibilities..."
-                        />
+                        <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">Short Description</label>
+                        <textarea {...register("shortDesc")} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 h-32 outline-none focus:border-blue-500 text-white resize-none" placeholder="Key responsibilities..." />
                     </div>
 
-                    <FormActions
-                        loading={loading}
-                        editingId={editingId}
-                        onCancel={onReset}
-                    />
+                    <FormActions loading={loading} editingId={editingId} onCancel={onReset} />
                 </form>
             }
             list={
                 <div className="grid gap-4">
-                    {exps.map((exp) => (
+                    {exps.map((exp: any) => (
                         <AdminListCard
                             key={exp._id}
-                            image={
-                                <img
-                                    src={
-                                        exp.bgImage || "/image/placeholder.png"
-                                    }
-                                    className="w-full h-full object-cover"
-                                />
-                            }
+                            image={<img src={exp.bgImage || "/image/placeholder.png"} className="w-full h-full object-cover" alt="bg" />}
                             title={`${exp.title} @ ${exp.company}`}
                             subtitle={
                                 <span className="flex items-center gap-3">
-                                    <span className="flex items-center gap-1">
-                                        <MapPin size={10} /> {exp.location}
-                                    </span>
+                                    <span className="flex items-center gap-1"><MapPin size={10} /> {exp.location}</span>
                                     <span className="font-mono text-blue-400/80">
-                                        {formatToMonth(exp.fromDate)} —{" "}
-                                        {exp.isCurrent
-                                            ? "PRESENT"
-                                            : formatToMonth(exp.toDate)}
+                                        {formatToMonth(exp.fromDate)} — {exp.isCurrent ? "PRESENT" : formatToMonth(exp.toDate)}
                                     </span>
                                 </span>
                             }
-                            actions={
-                                <ListActions
-                                    onEdit={() => onEdit(exp)}
-                                    onDelete={() => remove(exp._id)}
-                                />
-                            }
+                            actions={<ListActions onEdit={() => onEdit(exp)} onDelete={() => remove(exp._id)} />}
                         />
                     ))}
                 </div>

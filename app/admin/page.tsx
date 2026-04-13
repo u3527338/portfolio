@@ -8,7 +8,6 @@ import ExperienceAdminForm from "./ExperienceAdminForm";
 import SkillAdminForm from "./SkillAdminForm";
 
 export default function AdminPage() {
-    // 定義邊個 Tab 係 Active
     const [activeTab, setActiveTab] = useState("projects");
 
     const tabs = [

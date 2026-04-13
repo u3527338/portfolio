@@ -1,5 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 import { AdminSection } from "@/component/AdminSection";
 import { FormActions } from "@/component/FormActions";
 import {
@@ -8,9 +13,20 @@ import {
     SelectField,
 } from "@/component/FormElements";
 import { ListActions } from "@/component/ListActions";
-import { useState } from "react";
 import { useAdminData } from "../hook/useAdminData";
 import ProjectCard from "../projects/ProjectCard";
+
+const projectSchema = z.object({
+    title: z.string().min(1, "Project title is required"),
+    category: z.string().min(1, "Category is required"),
+    type: z.string(),
+    experienceId: z.string(),
+    tech: z.array(z.string()),
+    description: z.string(),
+    image: z.string(),
+});
+
+type ProjectFormValues = z.infer<typeof projectSchema>;
 
 export default function ProjectAdminForm() {
     const {
@@ -20,23 +36,34 @@ export default function ProjectAdminForm() {
         uploadImage,
         remove,
     } = useAdminData("/api/projects");
-    const { data: experiences } = useAdminData("/api/experiences");
-    const { data: skillGroups } = useAdminData("/api/skills");
+    const { data: experiences = [] } = useAdminData("/api/experiences");
+    const { data: skillGroups = [] } = useAdminData("/api/skills");
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    const [formData, setFormData] = useState({
-        title: "",
-        category: "",
-        type: "Work",
-        experienceId: "",
-        tech: [] as string[],
-        description: "",
-        image: "",
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useForm<ProjectFormValues>({
+        resolver: zodResolver(projectSchema),
+        defaultValues: {
+            title: "",
+            category: "",
+            type: "Work",
+            experienceId: "",
+            tech: [],
+            description: "",
+            image: "",
+        },
     });
 
+    const watchedValues = watch();
     const allSkills = skillGroups?.flatMap((g: any) => g.skills) || [];
 
     const handleFileChange = (file: File | null) => {
@@ -53,10 +80,14 @@ export default function ProjectAdminForm() {
     const onEdit = (p: any) => {
         setEditingId(p._id);
         setImagePreview(p.image || null);
-        setFormData({
-            ...p,
+        reset({
+            title: p.title || "",
+            category: p.category || "",
+            type: p.type || "Work",
             experienceId: p.experienceId?._id || p.experienceId || "",
+            tech: p.tech || [],
             description: p.description || "",
+            image: p.image || "",
         });
     };
 
@@ -64,45 +95,41 @@ export default function ProjectAdminForm() {
         setEditingId(null);
         setSelectedFile(null);
         setImagePreview(null);
-        setFormData({
-            title: "",
-            category: "",
-            type: "Work",
-            experienceId: "",
-            tech: [],
-            description: "",
-            image: "",
-        });
+        reset();
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        let finalImageUrl = formData.image;
+    const onSubmit: SubmitHandler<ProjectFormValues> = async (data) => {
+        let finalImageUrl = data.image;
 
         if (selectedFile) {
             finalImageUrl = await uploadImage(selectedFile, "project");
         }
 
         const success = await upsert(
-            { ...formData, image: finalImageUrl },
+            { ...data, image: finalImageUrl },
             editingId
         );
         if (success) onReset();
     };
 
-    // 2. 準備 Preview 數據 (Live Preview)
     const previewProject = {
-        ...formData,
+        ...watchedValues,
         _id: "preview",
         image: imagePreview || "/image/placeholder.png",
-        // 根據選取的 experienceId 搵返公司名
         source:
-            experiences.find((e: any) => e._id === formData.experienceId)
+            experiences.find((e: any) => e._id === watchedValues.experienceId)
                 ?.company || "Personal",
-        // 對應返 Skill 嘅詳細資料 (Icon, etc)
-        techDetails: formData.tech
+        techDetails: watchedValues.tech
             .map((name) => allSkills.find((s: any) => s.name === name))
             .filter(Boolean),
+    };
+
+    const toggleTech = (skillName: string) => {
+        const currentTech = watchedValues.tech || [];
+        const newTech = currentTech.includes(skillName)
+            ? currentTech.filter((t) => t !== skillName)
+            : [...currentTech, skillName];
+        setValue("tech", newTech, { shouldValidate: true });
     };
 
     return (
@@ -112,7 +139,7 @@ export default function ProjectAdminForm() {
                     title={editingId ? "Edit Project" : "Add New Project"}
                     form={
                         <form
-                            onSubmit={handleSubmit}
+                            onSubmit={handleSubmit(onSubmit)}
                             className="grid grid-cols-1 md:grid-cols-2 gap-6"
                         >
                             <div className="md:col-span-2">
@@ -124,44 +151,31 @@ export default function ProjectAdminForm() {
 
                             <InputField
                                 label="Project Title"
-                                value={formData.title}
-                                onChange={(v: string) =>
-                                    setFormData({ ...formData, title: v })
-                                }
+                                {...register("title")}
+                                error={errors.title?.message}
                             />
                             <InputField
                                 label="Category"
-                                value={formData.category}
-                                onChange={(v: string) =>
-                                    setFormData({ ...formData, category: v })
-                                }
+                                {...register("category")}
+                                error={errors.category?.message}
                             />
 
                             <SelectField
                                 label="Related Experience"
-                                value={formData.experienceId}
+                                {...register("experienceId")}
                                 options={[
-                                    "None",
+                                    { label: "Personal Project", value: "" },
                                     ...experiences.map((e: any) => ({
                                         label: e.company,
                                         value: e._id,
                                     })),
                                 ]}
-                                onChange={(v: string) =>
-                                    setFormData({
-                                        ...formData,
-                                        experienceId: v === "None" ? "" : v,
-                                    })
-                                }
                             />
 
                             <SelectField
                                 label="Type"
-                                value={formData.type}
+                                {...register("type")}
                                 options={["Work", "Self-Learning"]}
-                                onChange={(v: string) =>
-                                    setFormData({ ...formData, type: v })
-                                }
                             />
 
                             <div className="md:col-span-2 space-y-2">
@@ -174,24 +188,10 @@ export default function ProjectAdminForm() {
                                             key={skill.name}
                                             type="button"
                                             onClick={() =>
-                                                setFormData((prev) => ({
-                                                    ...prev,
-                                                    tech: prev.tech.includes(
-                                                        skill.name
-                                                    )
-                                                        ? prev.tech.filter(
-                                                              (t) =>
-                                                                  t !==
-                                                                  skill.name
-                                                          )
-                                                        : [
-                                                              ...prev.tech,
-                                                              skill.name,
-                                                          ],
-                                                }))
+                                                toggleTech(skill.name)
                                             }
                                             className={`px-3 py-1.5 rounded-lg text-[10px] transition-all border ${
-                                                formData.tech.includes(
+                                                watchedValues.tech.includes(
                                                     skill.name
                                                 )
                                                     ? "bg-blue-600 border-blue-400 text-white"
@@ -239,13 +239,12 @@ export default function ProjectAdminForm() {
                 />
             </div>
 
-            {/* Sticky Live Preview */}
             <div className="w-full lg:w-[400px] shrink-0">
                 <div className="sticky top-24">
                     <p className="text-xs font-mono text-slate-400 uppercase mb-4 tracking-widest italic">
                         Live Preview
                     </p>
-                    <ProjectCard project={previewProject} />
+                    <ProjectCard project={previewProject as any} />
                 </div>
             </div>
         </div>

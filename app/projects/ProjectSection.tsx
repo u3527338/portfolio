@@ -12,12 +12,8 @@ export default function ProjectSection({
 }) {
     const [filter, setFilter] = useState("All");
 
-    // 修正後的 Filter 邏輯
     const filteredProjects = (initialProjects || []).filter((p) => {
         if (filter === "All") return true;
-
-        // 安全檢查：確保 p.type 存在才進行比較
-        // 之前你用 p.source.includes(filter)，但 filter 啲字 (Work / Self-Learning) 其實係對應 p.type
         return p?.type === filter || p?.type?.includes(filter);
     });
 
@@ -65,7 +61,6 @@ export default function ProjectSection({
                     >
                         <AnimatePresence mode="popLayout">
                             {filteredProjects.map((project, idx) => (
-                                // 使用 project._id 作為 key 比 idx 更穩陣
                                 <ProjectCard
                                     key={project?._id || idx}
                                     project={project}
