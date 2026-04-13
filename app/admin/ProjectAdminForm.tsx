@@ -81,6 +81,8 @@ export default function ProjectAdminForm() {
         if (selectedFile) {
             const uploadData = new FormData();
             uploadData.append("file", selectedFile);
+            uploadData.append("folder", "project");
+
             const res = await fetch("/api/upload", {
                 method: "POST",
                 body: uploadData,
