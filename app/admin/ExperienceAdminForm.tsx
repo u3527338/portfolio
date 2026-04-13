@@ -14,6 +14,7 @@ export default function ExperienceAdminForm() {
         data: exps,
         loading,
         upsert,
+        uploadImage,
         remove,
     } = useAdminData("/api/experiences");
 
@@ -82,14 +83,7 @@ export default function ExperienceAdminForm() {
         let finalImageUrl = formData.bgImage;
 
         if (selectedFile) {
-            const uploadData = new FormData();
-            uploadData.append("file", selectedFile);
-            const res = await fetch("/api/upload", {
-                method: "POST",
-                body: uploadData,
-            });
-            const { url } = await res.json();
-            if (url) finalImageUrl = url;
+            finalImageUrl = await uploadImage(selectedFile, "experience");
         }
 
         const success = await upsert(

@@ -17,6 +17,7 @@ export default function ProjectAdminForm() {
         data: projects,
         loading,
         upsert,
+        uploadImage,
         remove,
     } = useAdminData("/api/projects");
     const { data: experiences } = useAdminData("/api/experiences");
@@ -79,16 +80,7 @@ export default function ProjectAdminForm() {
         let finalImageUrl = formData.image;
 
         if (selectedFile) {
-            const uploadData = new FormData();
-            uploadData.append("file", selectedFile);
-            uploadData.append("folder", "project");
-
-            const res = await fetch("/api/upload", {
-                method: "POST",
-                body: uploadData,
-            });
-            const { url } = await res.json();
-            if (url) finalImageUrl = url;
+            finalImageUrl = await uploadImage(selectedFile, "project");
         }
 
         const success = await upsert(
