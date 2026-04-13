@@ -27,7 +27,6 @@ export default function Navbar() {
                         }`}
                     >
                         {item.name}
-                        {/* 如果在該頁面，顯示底線 */}
                         {pathname === item.href && (
                             <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500" />
                         )}

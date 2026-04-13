@@ -34,8 +34,6 @@ export default function ProjectCard({ project }: { project: any }) {
                 href={`/projects/${project?._id}`}
                 className="absolute inset-0 z-30"
             />
-
-            {/* Source Tag */}
             <div className="absolute top-6 left-6 z-20">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10">
                     {isWork ? (
@@ -50,7 +48,6 @@ export default function ProjectCard({ project }: { project: any }) {
                 </div>
             </div>
 
-            {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
                     src={project?.image || "/image/placeholder.png"}
@@ -61,7 +58,6 @@ export default function ProjectCard({ project }: { project: any }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
             </div>
 
-            {/* Project Content */}
             <div className="relative z-10 h-full p-8 flex flex-col justify-end">
                 <div className="space-y-3">
                     <span className="text-blue-500 font-mono text-xs tracking-[0.2em] uppercase">
@@ -90,7 +86,6 @@ export default function ProjectCard({ project }: { project: any }) {
                     </div>
                 </div>
 
-                {/* Hover Buttons */}
                 <div className="absolute top-6 right-6 flex gap-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-40">
                     <a
                         href={project?.github || "#"}

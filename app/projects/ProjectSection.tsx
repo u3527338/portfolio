@@ -49,7 +49,6 @@ export default function ProjectSection({
                 </div>
             </div>
 
-            {/* Bento Grid Area */}
             <div className="relative h-[65vh]">
                 <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-slate-950 to-transparent z-20 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-slate-950 to-transparent z-20 pointer-events-none" />
@@ -71,7 +70,6 @@ export default function ProjectSection({
                 </div>
             </div>
 
-            {/* Footer Tip */}
             <div className="mt-4 flex justify-between items-center px-2 shrink-0">
                 <p className="text-[10px] font-mono text-slate-600 tracking-[0.3em]">
                     TOTAL {filteredProjects.length} PROJECTS

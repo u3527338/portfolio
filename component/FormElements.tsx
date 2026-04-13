@@ -3,10 +3,6 @@
 import React, { forwardRef } from "react";
 import { ImagePlus, X, ChevronDown } from "lucide-react";
 
-/**
- * InputField: 支援文字、月份、數字等輸入
- * 使用 forwardRef 確保 React Hook Form 可以控制 input 狀態
- */
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
@@ -31,10 +27,6 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 );
 InputField.displayName = "InputField";
 
-/**
- * SelectField: 下拉選單組件
- * 支援物件數組 [{label, value}] 或純字串數組
- */
 interface SelectFieldProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   options: (string | { label: string; value: any })[];
@@ -65,7 +57,6 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
             );
           })}
         </select>
-        {/* 自定義下拉箭頭 */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
           <ChevronDown size={16} />
         </div>
@@ -76,10 +67,6 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
 );
 SelectField.displayName = "SelectField";
 
-/**
- * ProjectImageUpload: 圖片上傳預覽組件
- * 這是一個受控組件，不直接使用 register，而是透過 onFileChange 回傳 File
- */
 interface ImageUploadProps {
   preview: string | null;
   onFileChange: (f: File | null) => void;

@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -18,7 +18,6 @@ export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => (
                 "{activeExp.shortDesc}"
             </p>
 
-            {/* 按鈕恢復點擊事件 */}
             <div className="pointer-events-auto mt-4">
                 <Link href={`/experience/${activeExp.id}`} passHref>
                     <motion.div

@@ -19,7 +19,6 @@ export default function AdminPage() {
     return (
         <main className="min-h-screen bg-slate-950 text-white py-20 px-6">
             <div className="max-w-7xl mx-auto">
-                {/* Header 部分 */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
                     <div>
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
@@ -30,7 +29,6 @@ export default function AdminPage() {
                         </p>
                     </div>
 
-                    {/* Tab 導航列 */}
                     <div className="flex gap-1 p-1.5 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-xl">
                         {tabs.map((tab) => {
                             const Icon = tab.icon;
@@ -66,7 +64,6 @@ export default function AdminPage() {
                     </div>
                 </div>
 
-                {/* 內容區域：用 Switch 概念顯示對應 Form */}
                 <div className="relative min-h-[600px]">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -76,7 +73,7 @@ export default function AdminPage() {
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.3 }}
                         >
-                            {activeTab === "projects" && <ProjectAdminForm/>}
+                            {activeTab === "projects" && <ProjectAdminForm />}
                             {activeTab === "experiences" && (
                                 <ExperienceAdminForm />
                             )}
