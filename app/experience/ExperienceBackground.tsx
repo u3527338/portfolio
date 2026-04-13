@@ -12,7 +12,7 @@ export const ExperienceBackground = ({
             <motion.div
                 key={activeBg} 
                 initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-                animate={{ opacity: 0.4, scale: 1, filter: "blur(0px)" }}
+                animate={{ opacity: 0.5, scale: 1, filter: "blur(0px)" }}
                 exit={{ opacity: 0, scale: 1.05 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="absolute inset-0 h-full w-full"

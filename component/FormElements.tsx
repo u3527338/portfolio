@@ -95,7 +95,7 @@ export const ProjectImageUpload = ({
     ) : (
       <div className="flex flex-col items-center gap-2 text-slate-400">
         <ImagePlus size={32} />
-        <span className="text-xs">Click to select project image</span>
+        <span className="text-xs">Click to select image</span>
         <input
           type="file"
           accept="image/*"
