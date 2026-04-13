@@ -19,7 +19,7 @@ export default function ProjectSection({
 
     return (
         <section className="h-screen w-full max-w-7xl mx-auto flex flex-col px-6">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6 shrink-0">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6 shrink-0">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}

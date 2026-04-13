@@ -17,7 +17,7 @@ export interface Experience {
   company: string;
   location: string;
   fromDate: string;
-  toDate: string | null;
+  toDate?: string;
   isCurrent: boolean;
   shortDesc: string;
   bgImage: string;
