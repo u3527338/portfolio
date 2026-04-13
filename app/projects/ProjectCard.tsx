@@ -8,7 +8,6 @@ import { FaGithub } from "react-icons/fa";
 
 export default function ProjectCard({ project }: { project: any }) {
     const isWork = project?.type?.includes("Work");
-
     const displaySource = project?.experience?.company || project?.source || "";
 
     return (
@@ -18,12 +17,9 @@ export default function ProjectCard({ project }: { project: any }) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{
-                duration: 0.4,
-                delay: 0.05,
-            }}
+            transition={{ duration: 0.4, delay: 0.05 }}
             whileHover={{ y: -8 }}
-            className={`relative rounded-[32px] overflow-hidden group border border-white/5 bg-slate-900/40 backdrop-blur-md 
+            className={`relative rounded-[32px] overflow-hidden group border border-white/5 bg-slate-900/40 backdrop-blur-md w-full aspect-video min-h-[320px]
         ${
             project?.size === "large"
                 ? "md:col-span-2 md:row-span-2"
@@ -34,6 +30,7 @@ export default function ProjectCard({ project }: { project: any }) {
                 href={`/projects/${project?._id}`}
                 className="absolute inset-0 z-30"
             />
+
             <div className="absolute top-6 left-6 z-20">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10">
                     {isWork ? (
@@ -58,13 +55,13 @@ export default function ProjectCard({ project }: { project: any }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
             </div>
 
-            <div className="relative z-10 h-full p-8 flex flex-col justify-end">
+            <div className="relative z-10 h-full p-8 flex flex-col justify-end pt-20">
                 <div className="space-y-3">
                     <span className="text-blue-500 font-mono text-xs tracking-[0.2em] uppercase">
-                        {project?.category}
+                        {project?.category || "Category"}
                     </span>
                     <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
-                        {project?.title}
+                        {project?.title || "Untitled"}
                     </h3>
                     <div className="flex flex-wrap gap-2 pt-2">
                         {(project?.techDetails || project?.tech || []).map(
@@ -72,7 +69,6 @@ export default function ProjectCard({ project }: { project: any }) {
                                 const techName =
                                     typeof t === "string" ? t : t.name;
                                 if (!techName) return null;
-
                                 return (
                                     <span
                                         key={`${techName}-${index}`}

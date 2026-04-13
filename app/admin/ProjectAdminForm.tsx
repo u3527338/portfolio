@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { AdminSection } from "@/component/AdminSection";
@@ -19,7 +19,7 @@ import ProjectCard from "../projects/ProjectCard";
 const projectSchema = z.object({
     title: z.string().min(1, "Project title is required"),
     category: z.string().min(1, "Category is required"),
-    type: z.string(),
+    type: z.string().min(1),
     experienceId: z.string(),
     tech: z.array(z.string()),
     description: z.string(),
@@ -51,7 +51,7 @@ export default function ProjectAdminForm() {
         setValue,
         formState: { errors },
     } = useForm<ProjectFormValues>({
-        resolver: zodResolver(projectSchema),
+        resolver: zodResolver(projectSchema) as any,
         defaultValues: {
             title: "",
             category: "",
@@ -100,16 +100,10 @@ export default function ProjectAdminForm() {
 
     const onSubmit: SubmitHandler<ProjectFormValues> = async (data) => {
         let finalImageUrl = data.image;
-
-        if (selectedFile) {
+        if (selectedFile)
             finalImageUrl = await uploadImage(selectedFile, "project");
-        }
-
-        const success = await upsert(
-            { ...data, image: finalImageUrl },
-            editingId
-        );
-        if (success) onReset();
+        if (await upsert({ ...data, image: finalImageUrl }, editingId))
+            onReset();
     };
 
     const previewProject = {
@@ -133,8 +127,8 @@ export default function ProjectAdminForm() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
-            <div className="flex-1">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 px-6 py-10">
+            <div className="flex-1 min-w-0">
                 <AdminSection
                     title={editingId ? "Edit Project" : "Add New Project"}
                     form={
@@ -148,7 +142,6 @@ export default function ProjectAdminForm() {
                                     onFileChange={handleFileChange}
                                 />
                             </div>
-
                             <InputField
                                 label="Project Title"
                                 {...register("title")}
@@ -159,7 +152,6 @@ export default function ProjectAdminForm() {
                                 {...register("category")}
                                 error={errors.category?.message}
                             />
-
                             <SelectField
                                 label="Related Experience"
                                 {...register("experienceId")}
@@ -171,7 +163,6 @@ export default function ProjectAdminForm() {
                                     })),
                                 ]}
                             />
-
                             <SelectField
                                 label="Type"
                                 {...register("type")}
@@ -203,7 +194,6 @@ export default function ProjectAdminForm() {
                                     ))}
                                 </div>
                             </div>
-
                             <FormActions
                                 loading={loading}
                                 editingId={editingId}
@@ -240,11 +230,13 @@ export default function ProjectAdminForm() {
             </div>
 
             <div className="w-full lg:w-[400px] shrink-0">
-                <div className="sticky top-24">
-                    <p className="text-xs font-mono text-slate-400 uppercase mb-4 tracking-widest italic">
+                <div className="lg:sticky lg:top-24">
+                    <p className="text-xs font-mono text-slate-400 uppercase mb-4 tracking-widest italic text-center lg:text-left">
                         Live Preview
                     </p>
-                    <ProjectCard project={previewProject as any} />
+                    <div className="w-full flex flex-col min-h-[300px] lg:min-h-[400px]">
+                        <ProjectCard project={previewProject as any} />
+                    </div>
                 </div>
             </div>
         </div>

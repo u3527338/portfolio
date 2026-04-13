@@ -14,11 +14,11 @@ export default function ProjectSection({
 
     const filteredProjects = (initialProjects || []).filter((p) => {
         if (filter === "All") return true;
-        return p?.type === filter || p?.type?.includes(filter);
+        return p?.type === filter || p?.type?.toString().includes(filter);
     });
 
     return (
-        <section className="h-screen w-full max-w-7xl mx-auto flex flex-col px-6">
+        <section className="h-full w-full max-w-7xl mx-auto flex flex-col px-6">
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6 shrink-0">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -49,28 +49,35 @@ export default function ProjectSection({
                 </div>
             </div>
 
-            <div className="relative h-[65vh]">
+            <div className="relative flex-1 min-h-0">
                 <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-slate-950 to-transparent z-20 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-slate-950 to-transparent z-20 pointer-events-none" />
 
                 <div className="h-full w-full overflow-y-auto no-scrollbar py-6">
                     <motion.div
                         layout
-                        className="grid grid-cols-1 md:grid-cols-3 auto-rows-[250px] gap-6"
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-8"
                     >
-                        <AnimatePresence mode="popLayout">
-                            {filteredProjects.map((project, idx) => (
-                                <ProjectCard
-                                    key={project?._id || idx}
-                                    project={project}
-                                />
+                        <AnimatePresence mode="popLayout" initial={false}>
+                            {filteredProjects.map((project) => (
+                                <motion.div
+                                    layout
+                                    key={project?._id}
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="w-full"
+                                >
+                                    <ProjectCard project={project} />
+                                </motion.div>
                             ))}
                         </AnimatePresence>
                     </motion.div>
                 </div>
             </div>
 
-            <div className="mt-4 flex justify-between items-center px-2 shrink-0">
+            <div className="py-4 flex justify-between items-center px-2 shrink-0">
                 <p className="text-[10px] font-mono text-slate-600 tracking-[0.3em]">
                     TOTAL {filteredProjects.length} PROJECTS
                 </p>
