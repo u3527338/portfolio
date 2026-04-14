@@ -1,13 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
-
-interface ActionButtonProps {
-    href: string;
-    icon: ReactNode;
-    variant?: "primary" | "secondary";
-    title?: string;
-}
+import { ActionButtonProps } from "@/lib/types";
 
 export function ProjectRefButton({
     href,

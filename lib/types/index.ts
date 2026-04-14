@@ -45,3 +45,38 @@ export interface Project {
 export type IconMapType = {
     [key: string]: ReactNode;
 };
+
+export interface InputFieldProps
+    extends React.InputHTMLAttributes<HTMLInputElement> {
+    label: string;
+    error?: string;
+}
+
+export interface SelectFieldProps
+    extends React.SelectHTMLAttributes<HTMLSelectElement> {
+    label: string;
+    options: (string | { label: string; value: any })[];
+    error?: string;
+}
+
+export interface ImageUploadProps {
+    preview: string | null;
+    onFileChange: (f: File | null) => void;
+}
+
+export interface TechStackProps {
+    tech: any[];
+}
+
+export interface ActionButtonProps {
+    href: string;
+    icon: ReactNode;
+    variant?: "primary" | "secondary";
+    title?: string;
+}
+
+export interface TreeProps {
+    experiences: Experience[];
+    activeId: string;
+    onHover: (exp: Experience) => void;
+}

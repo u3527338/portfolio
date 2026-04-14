@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { MapPin } from "lucide-react";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import * as z from "zod";
 
 import { AdminListCard } from "@/component/AdminListCard";
 import { AdminSection } from "@/component/AdminSection";
@@ -220,9 +220,7 @@ export default function ExperienceAdminForm() {
                             key={exp._id}
                             image={
                                 <img
-                                    src={
-                                        exp.bgImage || "/image/placeholder.png"
-                                    }
+                                    src={exp.bgImage}
                                     className="w-full h-full object-cover"
                                     alt="bg"
                                 />

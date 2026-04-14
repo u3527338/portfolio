@@ -10,6 +10,10 @@ import { TechStackList } from "./TechStackList";
 
 export default function ProjectCard({ project }: { project: any }) {
     const isWork = project?.type?.includes("Work");
+    const fallbackImage = isWork
+        ? "/image/fallback/work.png"
+        : "/image/fallback/study.jpeg";
+    const displayImage = project?.image || fallbackImage;
     const displaySource = project?.experienceId?.abbrev || project.source;
 
     return (
@@ -46,7 +50,7 @@ export default function ProjectCard({ project }: { project: any }) {
 
             <div className="absolute inset-0 z-0">
                 <Image
-                    src={project?.image || "/image/placeholder.png"}
+                    src={displayImage}
                     alt={project?.title || "Project"}
                     fill
                     className="object-cover opacity-30 group-hover:opacity-60 transition-all duration-700 grayscale group-hover:grayscale-0"

@@ -115,10 +115,10 @@ export default function ProjectAdminForm() {
     const previewProject = {
         ...watchedValues,
         _id: "preview",
-        image: imagePreview || "/image/placeholder.png",
+        image: imagePreview || "",
         source:
             experiences.find((e: any) => e._id === watchedValues.experienceId)
-                ?.company || "Personal",
+                ?.abbrev || "",
         techDetails: watchedValues.tech
             .map((name) => allSkills.find((s: any) => s.name === name))
             .filter(Boolean),

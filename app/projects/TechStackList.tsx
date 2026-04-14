@@ -1,11 +1,8 @@
 "use client";
 
+import { TechStackProps } from "@/lib/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-
-interface TechStackProps {
-    tech: any[];
-}
 
 const maxTech = 3;
 

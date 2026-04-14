@@ -6,7 +6,7 @@ import Link from "next/link";
 export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => (
     <AnimatePresence mode="wait">
         <motion.div
-            key={activeExp.id}
+            key={activeExp._id}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
@@ -19,7 +19,8 @@ export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => (
             </p>
 
             <div className="pointer-events-auto mt-4">
-                <Link href={`/experience/${activeExp.id}`} passHref>
+                {/* 將路徑從 /experience/${id} 改為 /projects?exp=${id} */}
+                <Link href={`/projects?exp=${activeExp._id}`} passHref>
                     <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}

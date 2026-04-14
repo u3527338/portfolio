@@ -1,14 +1,8 @@
 "use client";
 
-import { Experience } from "@/lib/types";
+import { TreeProps } from "@/lib/types";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-
-interface TreeProps {
-    experiences: Experience[];
-    activeId: string;
-    onHover: (exp: Experience) => void;
-}
 
 export const ExperienceTree = ({
     experiences,
