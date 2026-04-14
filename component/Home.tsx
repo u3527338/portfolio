@@ -1,12 +1,42 @@
 "use client";
 
 import profilePic from "@/public/image/hero.png";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Mail } from "lucide-react";
 import Image from "next/image";
 import { FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa";
 
 export default function Home() {
+    const text = "Hello World, I am SIU CHUN KIT";
+
+    const container: Variants = {
+        hidden: { opacity: 1 },
+        visible: {
+            opacity: 1,
+            transition: { 
+                staggerChildren: 0.08,
+            },
+        },
+    };
+
+    const child: Variants = {
+        visible: {
+            display: "inline-block",
+            opacity: 1,
+            scale: 1,
+            transition: {
+                type: "spring",
+                damping: 25,
+                stiffness: 300,
+            },
+        },
+        hidden: {
+            display: "inline-block",
+            opacity: 0,
+            scale: 0,
+        },
+    };
+
     return (
         <section className="relative h-screen w-full flex items-center bg-slate-950 px-6 lg:px-32 overflow-hidden">
             <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full z-10">
@@ -17,11 +47,23 @@ export default function Home() {
                     className="space-y-6 lg:space-y-8 z-20"
                 >
                     <div className="space-y-4 text-center lg:text-left">
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 leading-tight">
-                            Hello World,
-                            <br /> I am <br />
-                            <span className="text-blue-500">SIU CHUN KIT</span>
-                        </h1>
+                        <motion.h1 
+                            variants={container}
+                            initial="hidden"
+                            animate="visible"
+                            className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 leading-tight flex flex-wrap justify-center lg:justify-start items-center"
+                        >
+                            {text.split("").map((letter, index) => (
+                                <motion.span 
+                                    key={index}
+                                    variants={child}
+                                    className={index > 16 ? "text-blue-500" : ""}
+                                >
+                                    {letter === " " ? "\u00A0" : letter}
+                                </motion.span>
+                            ))}
+                        </motion.h1>
+                        
                         <p className="text-slate-400 text-lg md:text-xl max-w-lg mx-auto lg:mx-0 leading-relaxed">
                             一名熱衷於打造極致使用者體驗的{" "}
                             <span className="text-white font-medium">
@@ -33,30 +75,20 @@ export default function Home() {
 
                     <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
                         <div className="flex gap-5">
-                            <a
-                                href="#"
-                                className="p-3 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all transform hover:-translate-y-1"
-                            >
-                                <FaGoogle size={24} />
-                            </a>
-                            <a
-                                href="https://github.com"
-                                className="p-3 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all transform hover:-translate-y-1"
-                            >
-                                <FaGithub size={24} />
-                            </a>
-                            <a
-                                href="https://linkedin.com"
-                                className="p-3 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all transform hover:-translate-y-1"
-                            >
-                                <FaLinkedin size={24} />
-                            </a>
-                            <a
-                                href="mailto:your@email.com"
-                                className="p-3 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all transform hover:-translate-y-1"
-                            >
-                                <Mail size={24} />
-                            </a>
+                            {[
+                                { icon: <FaGoogle size={24} />, href: "#" },
+                                { icon: <FaGithub size={24} />, href: "https://github.com" },
+                                { icon: <FaLinkedin size={24} />, href: "https://linkedin.com" },
+                                { icon: <Mail size={24} />, href: "mailto:your@email.com" }
+                            ].map((social, i) => (
+                                <a
+                                    key={i}
+                                    href={social.href}
+                                    className="p-3 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all transform hover:-translate-y-1"
+                                >
+                                    {social.icon}
+                                </a>
+                            ))}
                         </div>
                     </div>
                 </motion.div>
