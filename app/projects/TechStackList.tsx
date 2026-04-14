@@ -2,7 +2,7 @@
 
 import { TechStackProps } from "@/lib/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const maxTech = 3;
 
@@ -15,18 +15,6 @@ export function TechStackList({ tech = [] }: TechStackProps) {
         .filter(Boolean);
     const visibleTech = isExpanded ? allTech : allTech.slice(0, maxTech);
     const remainingCount = allTech.length - maxTech;
-
-    useEffect(() => {
-        if (isExpanded && scrollRef.current) {
-            const el = scrollRef.current;
-            const scrollWidth = el.scrollWidth;
-            const clientWidth = el.clientWidth;
-
-            if (scrollWidth > clientWidth) {
-                // 自動滾動邏輯可在此實作
-            }
-        }
-    }, [isExpanded, allTech.length]);
 
     return (
         <div className="flex items-center justify-between gap-2 pt-2 w-full overflow-hidden pointer-events-auto">

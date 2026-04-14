@@ -15,6 +15,7 @@ import {
 import { ListActions } from "@/component/ListActions";
 import { useAdminData } from "../hook/useAdminData";
 import ProjectCard from "../projects/ProjectCard";
+import { workFallbackImage } from "@/lib/constant";
 
 const projectSchema = z.object({
     title: z.string().min(1, "Project title is required"),
@@ -45,6 +46,18 @@ export default function ProjectAdminForm() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+    const defaultValues = {
+        title: "Project Name",
+        category: "Category",
+        type: "Work",
+        experienceId: "",
+        tech: [],
+        description: "",
+        image: workFallbackImage,
+        githubLink: "",
+        referenceLink: "",
+    };
+
     const {
         register,
         handleSubmit,
@@ -54,17 +67,7 @@ export default function ProjectAdminForm() {
         formState: { errors },
     } = useForm<ProjectFormValues>({
         resolver: zodResolver(projectSchema) as any,
-        defaultValues: {
-            title: "",
-            category: "",
-            type: "Work",
-            experienceId: "",
-            tech: [],
-            description: "",
-            image: "",
-            githubLink: "",
-            referenceLink: "",
-        },
+        defaultValues,
     });
 
     const watchedValues = watch();
@@ -85,15 +88,18 @@ export default function ProjectAdminForm() {
         setEditingId(p._id);
         setImagePreview(p.image || null);
         reset({
-            title: p.title || "",
-            category: p.category || "",
-            type: p.type || "Work",
-            experienceId: p.experienceId?._id || p.experienceId || "",
-            tech: p.tech || [],
-            description: p.description || "",
-            image: p.image || "",
-            githubLink: p.githubLink || "",
-            referenceLink: p.referenceLink || "",
+            title: p.title || defaultValues.title,
+            category: p.category || defaultValues.category,
+            type: p.type || defaultValues.type,
+            experienceId:
+                p.experienceId?._id ||
+                p.experienceId ||
+                defaultValues.experienceId,
+            tech: p.tech || defaultValues.tech,
+            description: p.description || defaultValues.description,
+            image: p.image || defaultValues.image,
+            githubLink: p.githubLink || defaultValues.githubLink,
+            referenceLink: p.referenceLink || defaultValues.referenceLink,
         });
     };
 

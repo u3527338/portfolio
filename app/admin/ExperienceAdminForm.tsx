@@ -12,11 +12,15 @@ import { FormActions } from "@/component/FormActions";
 import { InputField, ProjectImageUpload } from "@/component/FormElements";
 import { ListActions } from "@/component/ListActions";
 import { useAdminData } from "../hook/useAdminData";
+import { officeFallbackImage } from "@/lib/constant";
 
 const experienceSchema = z.object({
     title: z.string().min(1, "Job title is required"),
     company: z.string().min(1, "Company name is required"),
-    abbrev: z.string().min(1, "Company abbreviation is required"),
+    abbrev: z
+        .string()
+        .min(1, "Company abbreviation is required")
+        .max(15, "Max 15 characters allowed"),
     location: z.string().min(1, "Location is required"),
     fromDate: z.string().min(1, "Start date is required"),
     toDate: z.string(),
@@ -40,6 +44,18 @@ export default function ExperienceAdminForm() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+    const defaultValues = {
+        title: "",
+        company: "",
+        abbrev: "",
+        location: "",
+        fromDate: "",
+        toDate: "",
+        isCurrent: false,
+        shortDesc: "",
+        bgImage: officeFallbackImage,
+    };
+
     const {
         register,
         handleSubmit,
@@ -48,17 +64,7 @@ export default function ExperienceAdminForm() {
         formState: { errors },
     } = useForm<ExperienceFormValues>({
         resolver: zodResolver(experienceSchema) as any,
-        defaultValues: {
-            title: "",
-            company: "",
-            abbrev: "",
-            location: "",
-            fromDate: "",
-            toDate: "",
-            isCurrent: false,
-            shortDesc: "",
-            bgImage: "",
-        },
+        defaultValues,
     });
 
     const isCurrent = watch("isCurrent");
@@ -86,15 +92,15 @@ export default function ExperienceAdminForm() {
         setEditingId(exp._id);
         setImagePreview(exp.bgImage || null);
         reset({
-            title: exp.title || "",
-            company: exp.company || "",
-            abbrev: exp.abbrev || "",
-            location: exp.location || "",
-            fromDate: formatToMonth(exp.fromDate),
-            toDate: formatToMonth(exp.toDate),
-            isCurrent: exp.isCurrent || false,
-            shortDesc: exp.shortDesc || "",
-            bgImage: exp.bgImage || "",
+            title: exp.title || defaultValues.title,
+            company: exp.company || defaultValues.company,
+            abbrev: exp.abbrev || defaultValues.abbrev,
+            location: exp.location || defaultValues.location,
+            fromDate: formatToMonth(exp.fromDate) || defaultValues.fromDate,
+            toDate: formatToMonth(exp.toDate) || defaultValues.toDate,
+            isCurrent: exp.isCurrent || defaultValues.isCurrent,
+            shortDesc: exp.shortDesc || defaultValues.shortDesc,
+            bgImage: exp.bgImage || defaultValues.bgImage,
         });
     };
 
@@ -220,7 +226,7 @@ export default function ExperienceAdminForm() {
                             key={exp._id}
                             image={
                                 <img
-                                    src={exp.bgImage}
+                                    src={exp.bgImage || officeFallbackImage}
                                     className="w-full h-full object-cover"
                                     alt="bg"
                                 />

@@ -3,16 +3,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { AdminListCard } from "@/component/AdminListCard";
 import { AdminSection } from "@/component/AdminSection";
 import { FormActions } from "@/component/FormActions";
 import { InputField, SelectField } from "@/component/FormElements";
+import { IconPreview } from "@/component/IconPreview";
 import { ListActions } from "@/component/ListActions";
 import { useAdminData } from "../hook/useAdminData";
-
-import { IconPreview } from "@/component/IconPreview";
-import { z } from "zod";
 
 const skillSchema = z.object({
     name: z.string().min(1, "Skill name is required"),
@@ -37,6 +36,13 @@ export default function SkillAdminForm() {
     } = useAdminData("/api/skills");
     const [editingId, setEditingId] = useState<string | null>(null);
 
+    const defaultValues: SkillFormValues = {
+        name: "",
+        iconName: "",
+        category: "Frontend Mastery",
+        level: 90,
+    };
+
     const {
         register,
         handleSubmit,
@@ -45,12 +51,7 @@ export default function SkillAdminForm() {
         formState: { errors },
     } = useForm<SkillFormValues>({
         resolver: zodResolver(skillSchema),
-        defaultValues: {
-            name: "",
-            iconName: "",
-            category: "Frontend Mastery",
-            level: 90,
-        },
+        defaultValues,
     });
 
     const watchedIconName = watch("iconName");
@@ -59,10 +60,10 @@ export default function SkillAdminForm() {
     const onEdit = (skill: any) => {
         setEditingId(skill._id);
         reset({
-            name: skill.name,
-            iconName: skill.iconName,
-            category: skill.category,
-            level: skill.level,
+            name: skill.name || defaultValues.name,
+            iconName: skill.iconName || defaultValues.iconName,
+            category: skill.category || defaultValues.category,
+            level: skill.level || defaultValues.level,
         });
     };
 
@@ -129,7 +130,7 @@ export default function SkillAdminForm() {
                             type="range"
                             min="0"
                             max="100"
-                            {...register("level")}
+                            {...register("level", { valueAsNumber: true })}
                             className="h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500 mt-4"
                         />
                     </div>
@@ -154,7 +155,7 @@ export default function SkillAdminForm() {
                                         <AdminListCard
                                             key={s._id}
                                             image={
-                                                <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                                                <div className="w-full h-full flex items-center justify-center bg-slate-800 rounded-lg">
                                                     <IconPreview
                                                         iconName={s.iconName}
                                                     />

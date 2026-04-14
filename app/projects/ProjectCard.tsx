@@ -1,5 +1,6 @@
 "use client";
 
+import { studyFallbackImage, workFallbackImage } from "@/lib/constant";
 import { motion } from "framer-motion";
 import { Briefcase, ExternalLink, User } from "lucide-react";
 import Image from "next/image";
@@ -10,11 +11,9 @@ import { TechStackList } from "./TechStackList";
 
 export default function ProjectCard({ project }: { project: any }) {
     const isWork = project?.type?.includes("Work");
-    const fallbackImage = isWork
-        ? "/image/fallback/work.png"
-        : "/image/fallback/study.jpeg";
+    const fallbackImage = isWork ? workFallbackImage : studyFallbackImage;
     const displayImage = project?.image || fallbackImage;
-    const displaySource = project?.experienceId?.abbrev || project.source;
+    const displaySource = project?.experienceId?.abbrev || project.source || "Company";
 
     return (
         <motion.div
@@ -42,7 +41,7 @@ export default function ProjectCard({ project }: { project: any }) {
                         <User size={12} className="text-purple-400" />
                     )}
                     <span className="text-[10px] font-mono font-medium text-slate-200 tracking-widest">
-                        {(project?.type || "").toString()}{" "}
+                        {(project?.type).toString()}{" "}
                         {isWork && displaySource && `@ ${displaySource}`}
                     </span>
                 </div>
@@ -61,10 +60,10 @@ export default function ProjectCard({ project }: { project: any }) {
             <div className="relative z-20 h-full p-8 flex flex-col justify-end pt-20 pointer-events-none">
                 <div className="space-y-3 w-full">
                     <span className="text-blue-500 font-mono text-xs tracking-[0.2em] uppercase">
-                        {project?.category || "Category"}
+                        {project?.category}
                     </span>
                     <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
-                        {project?.title || "Untitled"}
+                        {project?.title}
                     </h3>
                     <TechStackList
                         tech={project?.techDetails || project?.tech}

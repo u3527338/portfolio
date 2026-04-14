@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // 用來標示目前在哪一頁
+import { usePathname } from "next/navigation";
 
 const navItems = [
     { name: "Home", href: "/" },
-    { name: "Skills", href: "/skills" }, // 指向資料夾路徑
+    { name: "Skills", href: "/skills" },
     { name: "Projects", href: "/projects" },
     { name: "Experience", href: "/experience" },
 ];

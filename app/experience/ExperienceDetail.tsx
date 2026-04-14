@@ -19,14 +19,13 @@ export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => (
             </p>
 
             <div className="pointer-events-auto mt-4">
-                {/* 將路徑從 /experience/${id} 改為 /projects?exp=${id} */}
                 <Link href={`/projects?exp=${activeExp._id}`} passHref>
                     <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-blue-600 text-white border border-white/10 rounded-full font-bold backdrop-blur-md transition-all cursor-pointer group shadow-2xl"
                     >
-                        View Case Study{" "}
+                        View Projects{" "}
                         <ArrowRight
                             size={18}
                             className="group-hover:translate-x-2 transition-transform"
