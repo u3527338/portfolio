@@ -1,5 +1,4 @@
 import { connectDB } from "@/lib/mongodb";
-import { Experience } from "@/lib/types";
 import ExperienceModel from "@/models/Experience";
 import { NextResponse } from "next/server";
 

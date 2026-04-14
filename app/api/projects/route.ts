@@ -22,6 +22,11 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         let sourceName = body.source;
+
+        if (body.experienceId === "") {
+            delete body.experienceId;
+        }
+
         if (body.experienceId) {
             const exp = await ExperienceModel.findById(body.experienceId);
             if (exp) sourceName = exp.company;

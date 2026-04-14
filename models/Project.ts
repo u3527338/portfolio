@@ -17,8 +17,8 @@ const ProjectSchema = new Schema(
         },
         image: { type: String },
         tech: [String],
-        github: String,
-        link: String,
+        githubLink: String,
+        referenceLink: String,
         description: String,
     },
     { timestamps: true }

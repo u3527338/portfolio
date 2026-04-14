@@ -23,6 +23,8 @@ const projectSchema = z.object({
     experienceId: z.string(),
     tech: z.array(z.string()),
     description: z.string(),
+    githubLink: z.url("Must be a valid URL").optional().or(z.literal("")),
+    referenceLink: z.url("Must be a valid URL").optional().or(z.literal("")),
     image: z.string(),
 });
 
@@ -60,6 +62,8 @@ export default function ProjectAdminForm() {
             tech: [],
             description: "",
             image: "",
+            githubLink: "",
+            referenceLink: "",
         },
     });
 
@@ -88,6 +92,8 @@ export default function ProjectAdminForm() {
             tech: p.tech || [],
             description: p.description || "",
             image: p.image || "",
+            githubLink: p.githubLink || "",
+            referenceLink: p.referenceLink || "",
         });
     };
 
@@ -167,6 +173,16 @@ export default function ProjectAdminForm() {
                                 label="Type"
                                 {...register("type")}
                                 options={["Work", "Self-Learning"]}
+                            />
+                            <InputField
+                                label="Github Link"
+                                {...register("githubLink")}
+                                error={errors.githubLink?.message}
+                            />
+                            <InputField
+                                label="Reference Link"
+                                {...register("referenceLink")}
+                                error={errors.referenceLink?.message}
                             />
 
                             <div className="md:col-span-2 space-y-2">
