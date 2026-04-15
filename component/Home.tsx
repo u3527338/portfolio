@@ -1,8 +1,8 @@
 "use client";
 
+import { githubProfile, gmail, linkedInProfile } from "@/lib/constant";
 import profilePic from "@/public/image/hero.png";
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
 import Image from "next/image";
 import { FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa";
 import Typewriter from "typewriter-effect";
@@ -21,7 +21,7 @@ export default function Home() {
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight min-h-[2.5em] md:min-h-[1.8em] lg:min-h-[1.5em] relative">
                             <span className="sr-only">
                                 Hello World, I am SIU CHUN KIT - Full-stack
-                                Developer
+                                Developer passionate about UI/UX.
                             </span>
 
                             <Typewriter
@@ -54,9 +54,10 @@ export default function Home() {
                             className="text-slate-400 text-lg md:text-xl max-w-lg mx-auto lg:mx-0 leading-relaxed"
                         >
                             一名熱衷於打造極致使用者體驗的{" "}
-                            <span className="text-white font-medium">
+                            <strong className="text-white font-medium text-inherit">
+                                {" "}
                                 Full-stack 開發者
-                            </span>
+                            </strong>
                             。
                         </motion.p>
                     </div>
@@ -71,29 +72,26 @@ export default function Home() {
                             {[
                                 {
                                     icon: <FaGoogle size={24} />,
-                                    href: "#",
+                                    href: gmail,
                                     label: "Email via Google",
                                 },
                                 {
                                     icon: <FaGithub size={24} />,
-                                    href: "https://github.com",
+                                    href: githubProfile,
                                     label: "GitHub Profile",
                                 },
                                 {
                                     icon: <FaLinkedin size={24} />,
-                                    href: "https://linkedin.com",
+                                    href: linkedInProfile,
                                     label: "LinkedIn Profile",
-                                },
-                                {
-                                    icon: <Mail size={24} />,
-                                    href: "mailto:your@email.com",
-                                    label: "Send Email",
                                 },
                             ].map((social, i) => (
                                 <a
                                     key={i}
                                     href={social.href}
                                     aria-label={social.label}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="p-3 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all transform hover:-translate-y-1"
                                 >
                                     {social.icon}
@@ -116,10 +114,11 @@ export default function Home() {
                         <div className="relative w-full h-full lg:bg-slate-900 lg:rounded-[40px] overflow-hidden lg:border lg:border-white/20 lg:shadow-2xl">
                             <Image
                                 src={profilePic}
-                                alt="Profile picture of SIU CHUN KIT"
+                                alt="Full-stack Developer SIU CHUN KIT Portrait"
                                 fill
                                 className="object-cover object-top lg:object-center opacity-30 lg:opacity-100 transition-opacity duration-1000"
                                 priority
+                                sizes="(max-width: 768px) 100vw, 420px"
                             />
                         </div>
                     </div>

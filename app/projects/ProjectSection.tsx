@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Layers, X } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectSection({
@@ -20,7 +20,7 @@ export default function ProjectSection({
 
     const experiences = useMemo(() => {
         const exps: Record<string, string> = {};
-        initialProjects.forEach((p) => {
+        (initialProjects || []).forEach((p) => {
             if (p.experienceId?._id) {
                 exps[p.experienceId._id] =
                     p.experienceId.company || p.experienceId.abbrev;
@@ -55,13 +55,19 @@ export default function ProjectSection({
     };
 
     return (
-        <section className="h-full w-full max-w-7xl mx-auto flex flex-col px-6">
+        <section
+            className="h-full w-full max-w-7xl mx-auto flex flex-col px-6"
+            aria-labelledby="projects-heading"
+        >
             <div className="flex flex-col mb-8 gap-6 shrink-0">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                     >
+                        <h2 id="projects-heading" className="sr-only">
+                            Project Gallery
+                        </h2>
                         <p className="text-slate-500 font-mono text-xs uppercase tracking-widest">
                             <span className="text-blue-500">
                                 {(filteredProjects || []).length}+
@@ -70,7 +76,10 @@ export default function ProjectSection({
                         </p>
                     </motion.div>
 
-                    <div className="flex gap-1 p-1 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md">
+                    <nav
+                        className="flex gap-1 p-1 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md"
+                        aria-label="Project filters"
+                    >
                         {["All", "Work", "Self-Learning"].map((tab) => (
                             <button
                                 key={tab}
@@ -78,6 +87,7 @@ export default function ProjectSection({
                                     setFilter(tab);
                                     if (tab !== "Work") setSelectedExpId(null);
                                 }}
+                                aria-pressed={filter === tab}
                                 className={`px-5 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
                                     filter === tab
                                         ? "bg-blue-600 text-white shadow-lg"
@@ -87,7 +97,7 @@ export default function ProjectSection({
                                 {tab}
                             </button>
                         ))}
-                    </div>
+                    </nav>
                 </div>
 
                 <AnimatePresence>
@@ -97,6 +107,8 @@ export default function ProjectSection({
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             className="flex flex-wrap gap-2 items-center"
+                            role="group"
+                            aria-label="Filter by company"
                         >
                             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tighter mr-2">
                                 Filter by Company:
@@ -105,6 +117,7 @@ export default function ProjectSection({
                                 <button
                                     key={exp.id}
                                     onClick={() => setSelectedExpId(exp.id)}
+                                    aria-pressed={selectedExpId === exp.id}
                                     className={`px-3 py-1 rounded-lg text-[10px] border transition-all ${
                                         selectedExpId === exp.id
                                             ? "bg-blue-500/20 border-blue-500 text-blue-400"
@@ -118,6 +131,7 @@ export default function ProjectSection({
                                 <button
                                     onClick={clearExpFilter}
                                     className="p-1 text-slate-500 hover:text-white transition-colors"
+                                    aria-label="Clear company filter"
                                 >
                                     <X size={14} />
                                 </button>
@@ -134,7 +148,7 @@ export default function ProjectSection({
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-8"
                     >
                         <AnimatePresence mode="popLayout" initial={false}>
-                            {filteredProjects.map((project) => (
+                            {filteredProjects.map((project, index) => (
                                 <motion.div
                                     layout
                                     key={project?._id}
@@ -144,7 +158,10 @@ export default function ProjectSection({
                                     transition={{ duration: 0.3 }}
                                     className="w-full"
                                 >
-                                    <ProjectCard project={project} />
+                                    <ProjectCard
+                                        project={project}
+                                        index={index}
+                                    />
                                 </motion.div>
                             ))}
                         </AnimatePresence>
@@ -152,7 +169,10 @@ export default function ProjectSection({
                 </div>
             </div>
 
-            <div className="py-4 flex justify-between items-center px-2 shrink-0">
+            <div
+                className="py-4 flex justify-between items-center px-2 shrink-0"
+                aria-hidden="true"
+            >
                 <p className="text-[10px] font-mono text-slate-600 tracking-[0.3em]">
                     TOTAL {filteredProjects.length} PROJECTS
                 </p>

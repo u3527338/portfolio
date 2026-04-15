@@ -3,9 +3,15 @@ import { officeFallbackImage } from "@/lib/constant";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 
-export const ExperienceBackground = ({ activeBg }: { activeBg: string }) => (
+export const ExperienceBackground = ({
+    activeBg,
+    activeCompanyName,
+}: {
+    activeBg: string;
+    activeCompanyName?: string;
+}) => (
     <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none">
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
             <motion.div
                 key={activeBg}
                 initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
@@ -16,11 +22,16 @@ export const ExperienceBackground = ({ activeBg }: { activeBg: string }) => (
             >
                 <Image
                     src={activeBg || officeFallbackImage}
-                    alt="Work context"
+                    alt={
+                        activeCompanyName
+                            ? `${activeCompanyName} Office Background`
+                            : "Professional experience background"
+                    }
                     fill
                     priority
                     sizes="100vw"
                     className="object-cover object-center"
+                    quality={75}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/50 to-transparent" />
             </motion.div>

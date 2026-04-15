@@ -65,6 +65,7 @@ export interface ImageUploadProps {
 }
 
 export interface TechStackProps {
+    id: string;
     tech: any[];
 }
 
