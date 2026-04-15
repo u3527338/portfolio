@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-
+import QueryProvider from "./provider/QueryProvider";
 export const metadata: Metadata = {
     title: "Admin Dashboard | Portfolio",
     description: "Content management system for portfolio data.",
@@ -23,7 +23,7 @@ export default function AdminLayout({
     return (
         <div className="h-full w-full overflow-y-auto custom-scrollbar bg-slate-950">
             <div className="max-w-7xl mx-auto px-6">
-                {children}
+                <QueryProvider>{children}</QueryProvider>
             </div>
         </div>
     );
