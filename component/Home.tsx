@@ -72,7 +72,7 @@ export default function Home() {
                             {[
                                 {
                                     icon: <FaGoogle size={24} />,
-                                    href: gmail,
+                                    href: `mailto:${gmail}`,
                                     label: "Email via Google",
                                 },
                                 {
