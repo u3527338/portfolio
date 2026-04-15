@@ -5,13 +5,13 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { AdminListCard } from "@/component/AdminListCard";
-import { AdminSection } from "@/component/AdminSection";
-import { FormActions } from "@/component/FormActions";
-import { InputField, SelectField } from "@/component/FormElements";
-import { IconPreview } from "@/component/IconPreview";
-import { ListActions } from "@/component/ListActions";
-import { useAdminData } from "../hook/useAdminData";
+import { AdminListCard } from "@/component/admin/AdminListCard";
+import { AdminSection } from "@/component/admin/AdminSection";
+import { FormActions } from "@/component/admin/FormActions";
+import { InputField, SelectField } from "@/component/admin/FormElements";
+import { IconPreview } from "@/component/admin/IconPreview";
+import { ListActions } from "@/component/admin/ListActions";
+import { useSkills } from "../hook/useSkills";
 
 const skillSchema = z.object({
     name: z.string().min(1, "Skill name is required"),
@@ -27,13 +27,13 @@ const skillSchema = z.object({
 
 type SkillFormValues = z.infer<typeof skillSchema>;
 
-export default function SkillAdminForm() {
-    const {
-        data: groups,
-        loading,
-        upsert,
-        remove,
-    } = useAdminData("/api/skills");
+export default function SkillAdminForm({
+    initialData,
+}: {
+    initialData?: any[];
+}) {
+    const { groups, isLoading, isPending, upsert, remove } =
+        useSkills(initialData);
     const [editingId, setEditingId] = useState<string | null>(null);
 
     const defaultValues: SkillFormValues = {
@@ -57,23 +57,24 @@ export default function SkillAdminForm() {
     const watchedIconName = watch("iconName");
     const watchedLevel = watch("level");
 
+    const onSubmit: SubmitHandler<SkillFormValues> = async (data) => {
+        const result = await upsert({ data, id: editingId });
+        if (result.success) onReset();
+    };
+
     const onEdit = (skill: any) => {
         setEditingId(skill._id);
         reset({
-            name: skill.name || defaultValues.name,
-            iconName: skill.iconName || defaultValues.iconName,
-            category: skill.category || defaultValues.category,
-            level: skill.level || defaultValues.level,
+            name: skill.name,
+            iconName: skill.iconName,
+            category: skill.category,
+            level: skill.level,
         });
     };
 
     const onReset = () => {
         setEditingId(null);
-        reset();
-    };
-
-    const onSubmit: SubmitHandler<SkillFormValues> = async (data) => {
-        if (await upsert(data, editingId)) onReset();
+        reset(defaultValues);
     };
 
     return (
@@ -91,7 +92,7 @@ export default function SkillAdminForm() {
                     />
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">
+                        <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
                             Icon Name (Si/Fa/Ai)
                         </label>
                         <div className="relative flex items-center">
@@ -104,11 +105,6 @@ export default function SkillAdminForm() {
                                 <IconPreview iconName={watchedIconName} />
                             </div>
                         </div>
-                        {errors.iconName && (
-                            <span className="text-red-500 text-[10px]">
-                                {errors.iconName.message}
-                            </span>
-                        )}
                     </div>
 
                     <SelectField
@@ -123,7 +119,7 @@ export default function SkillAdminForm() {
                     />
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">
+                        <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
                             Proficiency ({watchedLevel}%)
                         </label>
                         <input
@@ -136,7 +132,7 @@ export default function SkillAdminForm() {
                     </div>
 
                     <FormActions
-                        loading={loading}
+                        loading={isPending}
                         editingId={editingId}
                         onCancel={onReset}
                     />
@@ -144,10 +140,14 @@ export default function SkillAdminForm() {
             }
             list={
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {groups &&
+                    {isLoading ? (
+                        <div className="col-span-2 text-center p-8 text-slate-500 font-mono text-xs">
+                            LOADING SKILLS...
+                        </div>
+                    ) : (
                         groups.map((group: any) => (
                             <div key={group.category} className="space-y-4">
-                                <h4 className="text-blue-400 font-mono text-xs uppercase tracking-widest border-b border-white/5 pb-2">
+                                <h4 className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.2em] border-b border-white/5 pb-2">
                                     {group.category}
                                 </h4>
                                 <div className="space-y-2">
@@ -155,7 +155,7 @@ export default function SkillAdminForm() {
                                         <AdminListCard
                                             key={s._id}
                                             image={
-                                                <div className="w-full h-full flex items-center justify-center bg-slate-800 rounded-lg">
+                                                <div className="w-full h-full flex items-center justify-center bg-slate-800/50 rounded-lg text-xl">
                                                     <IconPreview
                                                         iconName={s.iconName}
                                                     />
@@ -167,7 +167,9 @@ export default function SkillAdminForm() {
                                                 <ListActions
                                                     onEdit={() => onEdit(s)}
                                                     onDelete={() =>
-                                                        remove(s._id)
+                                                        confirm(
+                                                            "Delete skill?"
+                                                        ) && remove(s._id)
                                                     }
                                                 />
                                             }
@@ -175,7 +177,8 @@ export default function SkillAdminForm() {
                                     ))}
                                 </div>
                             </div>
-                        ))}
+                        ))
+                    )}
                 </div>
             }
         />

@@ -1,6 +1,6 @@
 import { workFallbackImage } from "@/lib/constant";
 import { Metadata } from "next";
-import ProjectSection from "./ProjectSection";
+import ProjectSection from "./component/ProjectSection";
 
 async function getProjects() {
     try {
@@ -83,7 +83,7 @@ export default async function ProjectsPage() {
                 {JSON.stringify(jsonLd)}
             </script>
             <h1 className="sr-only">SIU CHUN KIT 的精選專案作品集</h1>
-            
+
             <ProjectSection initialProjects={projects} />
         </main>
     );

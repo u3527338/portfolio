@@ -15,30 +15,3 @@ export async function GET() {
         return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
     }
 }
-
-export async function POST(request: Request) {
-    try {
-        await connectDB();
-        const body = await request.json();
-
-        let sourceName = body.source;
-
-        if (body.experienceId === "") {
-            delete body.experienceId;
-        }
-
-        if (body.experienceId) {
-            const exp = await ExperienceModel.findById(body.experienceId);
-            if (exp) sourceName = exp.company;
-        }
-
-        const newProject = await ProjectModel.create({
-            ...body,
-            source: sourceName,
-        });
-
-        return NextResponse.json(newProject, { status: 201 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-}

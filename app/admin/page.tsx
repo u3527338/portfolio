@@ -3,9 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Briefcase, FolderGit2, ShieldCheck, Trophy } from "lucide-react";
 import { useState } from "react";
-import ExperienceAdminForm from "./ExperienceAdminForm";
-import ProjectAdminForm from "./ProjectAdminForm";
-import SkillAdminForm from "./SkillAdminForm";
+import ExperienceAdminForm from "./form/ExperienceAdminForm";
+import ProjectAdminForm from "./form/ProjectAdminForm";
+import SkillAdminForm from "./form/SkillAdminForm";
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState("projects");

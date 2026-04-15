@@ -1,54 +1,55 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { AdminSection } from "@/component/AdminSection";
-import { FormActions } from "@/component/FormActions";
+import { AdminListCard } from "@/component/admin/AdminListCard";
+import { AdminSection } from "@/component/admin/AdminSection";
+import { FormActions } from "@/component/admin/FormActions";
 import {
     InputField,
     ProjectImageUpload,
     SelectField,
-} from "@/component/FormElements";
-import { ListActions } from "@/component/ListActions";
-import { useAdminData } from "../hook/useAdminData";
-import ProjectCard from "../projects/ProjectCard";
+} from "@/component/admin/FormElements";
+import { ListActions } from "@/component/admin/ListActions";
 import { workFallbackImage } from "@/lib/constant";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import * as z from "zod";
+import { useExperiences } from "../hook/useExperiences";
+import { useProjects } from "../hook/useProjects";
+import { useSkills } from "../hook/useSkills";
+import ProjectCard from "../../projects/component/ProjectCard";
 
 const projectSchema = z.object({
     title: z.string().min(1, "Project title is required"),
     category: z.string().min(1, "Category is required"),
     type: z.string().min(1),
-    experienceId: z.string(),
+    experienceId: z.string().optional().or(z.literal("")),
     tech: z.array(z.string()),
     description: z.string(),
-    githubLink: z.url("Must be a valid URL").optional().or(z.literal("")),
-    referenceLink: z.url("Must be a valid URL").optional().or(z.literal("")),
+    githubLink: z.string().url().optional().or(z.literal("")),
+    referenceLink: z.string().url().optional().or(z.literal("")),
     image: z.string(),
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
 
-export default function ProjectAdminForm() {
-    const {
-        data: projects,
-        loading,
-        upsert,
-        uploadImage,
-        remove,
-    } = useAdminData("/api/projects");
-    const { data: experiences = [] } = useAdminData("/api/experiences");
-    const { data: skillGroups = [] } = useAdminData("/api/skills");
+export default function ProjectAdminForm({
+    initialData,
+}: {
+    initialData?: any[];
+}) {
+    const { projects, isLoading, isPending, upsert, remove } =
+        useProjects(initialData);
+    const { exps: experiences } = useExperiences();
+    const { groups: skillGroups } = useSkills();
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    const defaultValues = {
-        title: "Project Name",
-        category: "Category",
+    const defaultValues: ProjectFormValues = {
+        title: "",
+        category: "",
         type: "Work",
         experienceId: "",
         tech: [],
@@ -73,33 +74,22 @@ export default function ProjectAdminForm() {
     const watchedValues = watch();
     const allSkills = skillGroups?.flatMap((g: any) => g.skills) || [];
 
-    const handleFileChange = (file: File | null) => {
-        setSelectedFile(file);
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => setImagePreview(reader.result as string);
-            reader.readAsDataURL(file);
-        } else {
-            setImagePreview(null);
-        }
+    const onSubmit: SubmitHandler<ProjectFormValues> = async (data) => {
+        const result = await upsert({
+            data: { ...data, _id: editingId },
+            file: selectedFile,
+        });
+        if (result.success) onReset();
     };
 
     const onEdit = (p: any) => {
         setEditingId(p._id);
         setImagePreview(p.image || null);
         reset({
-            title: p.title || defaultValues.title,
-            category: p.category || defaultValues.category,
-            type: p.type || defaultValues.type,
-            experienceId:
-                p.experienceId?._id ||
-                p.experienceId ||
-                defaultValues.experienceId,
-            tech: p.tech || defaultValues.tech,
-            description: p.description || defaultValues.description,
-            image: p.image || defaultValues.image,
-            githubLink: p.githubLink || defaultValues.githubLink,
-            referenceLink: p.referenceLink || defaultValues.referenceLink,
+            ...p,
+            experienceId: p.experienceId?._id || p.experienceId || "",
+            githubLink: p.githubLink || "",
+            referenceLink: p.referenceLink || "",
         });
     };
 
@@ -107,27 +97,7 @@ export default function ProjectAdminForm() {
         setEditingId(null);
         setSelectedFile(null);
         setImagePreview(null);
-        reset();
-    };
-
-    const onSubmit: SubmitHandler<ProjectFormValues> = async (data) => {
-        let finalImageUrl = data.image;
-        if (selectedFile)
-            finalImageUrl = await uploadImage(selectedFile, "project");
-        if (await upsert({ ...data, image: finalImageUrl }, editingId))
-            onReset();
-    };
-
-    const previewProject = {
-        ...watchedValues,
-        _id: "preview",
-        image: imagePreview || "",
-        source:
-            experiences.find((e: any) => e._id === watchedValues.experienceId)
-                ?.abbrev || "",
-        techDetails: watchedValues.tech
-            .map((name) => allSkills.find((s: any) => s.name === name))
-            .filter(Boolean),
+        reset(defaultValues);
     };
 
     const toggleTech = (skillName: string) => {
@@ -138,11 +108,23 @@ export default function ProjectAdminForm() {
         setValue("tech", newTech, { shouldValidate: true });
     };
 
+    const previewProject = {
+        ...watchedValues,
+        _id: "preview",
+        image: imagePreview || watchedValues.image,
+        source:
+            experiences.find((e: any) => e._id === watchedValues.experienceId)
+                ?.abbrev || "",
+        techDetails: watchedValues.tech
+            .map((name) => allSkills.find((s: any) => s.name === name))
+            .filter(Boolean),
+    };
+
     return (
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 px-6 py-10">
             <div className="flex-1 min-w-0">
                 <AdminSection
-                    title={editingId ? "Edit Project" : "Add New Project"}
+                    title={editingId ? "Edit Project" : "Add Project"}
                     form={
                         <form
                             onSubmit={handleSubmit(onSubmit)}
@@ -151,11 +133,17 @@ export default function ProjectAdminForm() {
                             <div className="md:col-span-2">
                                 <ProjectImageUpload
                                     preview={imagePreview}
-                                    onFileChange={handleFileChange}
+                                    onFileChange={(file) => {
+                                        setSelectedFile(file);
+                                        if (file)
+                                            setImagePreview(
+                                                URL.createObjectURL(file)
+                                            );
+                                    }}
                                 />
                             </div>
                             <InputField
-                                label="Project Title"
+                                label="Title"
                                 {...register("title")}
                                 error={errors.title?.message}
                             />
@@ -181,21 +169,21 @@ export default function ProjectAdminForm() {
                                 options={["Work", "Self-Learning"]}
                             />
                             <InputField
-                                label="Github Link"
+                                label="Github"
                                 {...register("githubLink")}
                                 error={errors.githubLink?.message}
                             />
                             <InputField
-                                label="Reference Link"
+                                label="Reference"
                                 {...register("referenceLink")}
                                 error={errors.referenceLink?.message}
                             />
 
                             <div className="md:col-span-2 space-y-2">
-                                <label className="text-xs font-mono text-slate-400 uppercase tracking-widest">
+                                <label className="text-[10px] font-mono text-slate-500 uppercase">
                                     Tech Stack
                                 </label>
-                                <div className="flex flex-wrap gap-2 p-4 bg-black/20 rounded-2xl border border-white/5 max-h-40 overflow-y-auto no-scrollbar">
+                                <div className="flex flex-wrap gap-2 p-4 bg-white/5 rounded-2xl border border-white/10 max-h-40 overflow-y-auto">
                                     {allSkills.map((skill: any) => (
                                         <button
                                             key={skill.name}
@@ -203,12 +191,12 @@ export default function ProjectAdminForm() {
                                             onClick={() =>
                                                 toggleTech(skill.name)
                                             }
-                                            className={`px-3 py-1.5 rounded-lg text-[10px] transition-all border ${
+                                            className={`px-3 py-1 rounded-full text-[10px] border transition-all ${
                                                 watchedValues.tech.includes(
                                                     skill.name
                                                 )
-                                                    ? "bg-blue-600 border-blue-400 text-white"
-                                                    : "bg-white/5 border-white/10 text-slate-400"
+                                                    ? "bg-blue-600 border-blue-400"
+                                                    : "bg-white/5 border-white/10 text-slate-500"
                                             }`}
                                         >
                                             {skill.name}
@@ -216,49 +204,62 @@ export default function ProjectAdminForm() {
                                     ))}
                                 </div>
                             </div>
+
+                            <div className="md:col-span-2 space-y-2">
+                                <label className="text-[10px] font-mono text-slate-500 uppercase">
+                                    Description
+                                </label>
+                                <textarea
+                                    {...register("description")}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white h-32 outline-none focus:border-blue-500"
+                                />
+                            </div>
+
                             <FormActions
-                                loading={loading}
+                                loading={isPending}
                                 editingId={editingId}
                                 onCancel={onReset}
                             />
                         </form>
                     }
                     list={
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {projects.map((p: any) => (
-                                <div
+                                <AdminListCard
                                     key={p._id}
-                                    className="flex justify-between items-center bg-white/5 p-4 rounded-2xl group border border-transparent hover:border-white/10"
-                                >
-                                    <div>
-                                        <h4 className="font-bold text-sm">
-                                            {p.title}
-                                        </h4>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-tight">
-                                            {p.category} @{" "}
-                                            {p.experienceId?.company ||
-                                                "Personal"}
-                                        </p>
-                                    </div>
-                                    <ListActions
-                                        onEdit={() => onEdit(p)}
-                                        onDelete={() => remove(p._id)}
-                                    />
-                                </div>
+                                    image={
+                                        <img
+                                            src={p.image || workFallbackImage}
+                                            className="w-full h-full object-cover"
+                                            alt={p.title}
+                                        />
+                                    }
+                                    title={p.title}
+                                    subtitle={`${p.category} @ ${
+                                        p.experienceId?.company || "Personal"
+                                    }`}
+                                    actions={
+                                        <ListActions
+                                            onEdit={() => onEdit(p)}
+                                            onDelete={() =>
+                                                confirm("Confirm delete?") &&
+                                                remove(p._id)
+                                            }
+                                        />
+                                    }
+                                />
                             ))}
                         </div>
                     }
                 />
             </div>
 
-            <div className="w-full lg:w-[400px] shrink-0">
-                <div className="lg:sticky lg:top-24">
-                    <p className="text-xs font-mono text-slate-400 uppercase mb-4 tracking-widest italic text-center lg:text-left">
+            <div className="w-full lg:w-[380px]">
+                <div className="sticky top-24">
+                    <p className="text-[10px] font-mono text-blue-500 uppercase mb-4 tracking-[0.2em]">
                         Live Preview
                     </p>
-                    <div className="w-full flex flex-col min-h-[300px] lg:min-h-[400px]">
-                        <ProjectCard project={previewProject as any} />
-                    </div>
+                    <ProjectCard project={previewProject as any} />
                 </div>
             </div>
         </div>

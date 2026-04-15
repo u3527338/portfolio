@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import SkillSection from "./SkillSection";
+import SkillSection from "./component/SkillSection";
 
 async function getSkills() {
   try {
