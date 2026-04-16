@@ -1,5 +1,5 @@
+import QueryProvider from "@/src/provider/QueryProvider";
 import { Metadata } from "next";
-import QueryProvider from "./provider/QueryProvider";
 export const metadata: Metadata = {
     title: "Admin Dashboard | Portfolio",
     description: "Content management system for portfolio data.",

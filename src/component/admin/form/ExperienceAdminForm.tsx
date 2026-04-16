@@ -6,13 +6,16 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { AdminListCard } from "@/component/admin/AdminListCard";
-import { AdminSection } from "@/component/admin/AdminSection";
-import { FormActions } from "@/component/admin/FormActions";
-import { InputField, ProjectImageUpload } from "@/component/admin/FormElements";
-import { ListActions } from "@/component/admin/ListActions";
+import { AdminListCard } from "@/src/component/admin/AdminListCard";
+import { AdminSection } from "@/src/component/admin/AdminSection";
+import { FormActions } from "@/src/component/admin/FormActions";
+import {
+    InputField,
+    ProjectImageUpload,
+} from "@/src/component/admin/FormElements";
+import { ListActions } from "@/src/component/admin/ListActions";
 import { officeFallbackImage } from "@/lib/constant";
-import { useExperiences } from "../hook/useExperiences";
+import { useExperiences } from "@/src/hook/useExperiences";
 
 const experienceSchema = z.object({
     title: z.string().min(1, "Job title is required"),

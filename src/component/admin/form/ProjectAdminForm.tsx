@@ -1,23 +1,23 @@
 "use client";
 
-import { AdminListCard } from "@/component/admin/AdminListCard";
-import { AdminSection } from "@/component/admin/AdminSection";
-import { FormActions } from "@/component/admin/FormActions";
+import { workFallbackImage } from "@/lib/constant";
+import { AdminListCard } from "@/src/component/admin/AdminListCard";
+import { AdminSection } from "@/src/component/admin/AdminSection";
+import { FormActions } from "@/src/component/admin/FormActions";
 import {
     InputField,
     ProjectImageUpload,
     SelectField,
-} from "@/component/admin/FormElements";
-import { ListActions } from "@/component/admin/ListActions";
-import { workFallbackImage } from "@/lib/constant";
+} from "@/src/component/admin/FormElements";
+import { ListActions } from "@/src/component/admin/ListActions";
+import { useExperiences } from "@/src/hook/useExperiences";
+import { useProjects } from "@/src/hook/useProjects";
+import { useSkills } from "@/src/hook/useSkills";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
-import { useExperiences } from "../hook/useExperiences";
-import { useProjects } from "../hook/useProjects";
-import { useSkills } from "../hook/useSkills";
-import ProjectCard from "../../projects/component/ProjectCard";
+import ProjectCard from "../../projects/ProjectCard";
 
 const projectSchema = z.object({
     title: z.string().min(1, "Project title is required"),

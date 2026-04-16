@@ -1,17 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { AdminListCard } from "@/component/admin/AdminListCard";
-import { AdminSection } from "@/component/admin/AdminSection";
-import { FormActions } from "@/component/admin/FormActions";
-import { InputField, SelectField } from "@/component/admin/FormElements";
-import { IconPreview } from "@/component/admin/IconPreview";
-import { ListActions } from "@/component/admin/ListActions";
-import { useSkills } from "../hook/useSkills";
+import { AdminListCard } from "@/src/component/admin/AdminListCard";
+import { AdminSection } from "@/src/component/admin/AdminSection";
+import { FormActions } from "@/src/component/admin/FormActions";
+import { InputField, SelectField } from "@/src/component/admin/FormElements";
+import { IconPreview } from "@/src/component/admin/IconPreview";
+import { ListActions } from "@/src/component/admin/ListActions";
+import { useSkills } from "@/src/hook/useSkills";
 
 const skillSchema = z.object({
     name: z.string().min(1, "Skill name is required"),
@@ -32,6 +33,7 @@ export default function SkillAdminForm({
 }: {
     initialData?: any[];
 }) {
+    const t = useTranslations("AdminSkill");
     const { groups, isLoading, isPending, upsert, remove } =
         useSkills(initialData);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -77,23 +79,29 @@ export default function SkillAdminForm({
         reset(defaultValues);
     };
 
+    // 關鍵：將 Enum 字串動態轉化為符合 JSON 的 Key (如 "frontend_mastery")
+    const categoryOptions = skillSchema.shape.category.options.map((cat) => ({
+        value: cat,
+        label: t(`categories.${cat.toLowerCase().replace(/ & | /g, "_")}`),
+    }));
+
     return (
         <AdminSection
-            title={editingId ? "Edit Skill" : "Add New Skill"}
+            title={editingId ? t("form.titleEdit") : t("form.titleAdd")}
             form={
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                 >
                     <InputField
-                        label="Skill Name"
+                        label={t("fields.name")}
                         {...register("name")}
                         error={errors.name?.message}
                     />
 
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-                            Icon Name (Si/Fa/Ai)
+                            {t("fields.iconName")}
                         </label>
                         <div className="relative flex items-center">
                             <input
@@ -108,19 +116,14 @@ export default function SkillAdminForm({
                     </div>
 
                     <SelectField
-                        label="Category"
+                        label={t("fields.category")}
                         {...register("category")}
-                        options={[
-                            "Frontend Mastery",
-                            "Backend & Real-time",
-                            "Database & DevOps",
-                            "Business Automation",
-                        ]}
+                        options={categoryOptions}
                     />
 
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-                            Proficiency ({watchedLevel}%)
+                            {t("fields.proficiency")} ({watchedLevel}%)
                         </label>
                         <input
                             type="range"
@@ -142,13 +145,17 @@ export default function SkillAdminForm({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {isLoading ? (
                         <div className="col-span-2 text-center p-8 text-slate-500 font-mono text-xs">
-                            LOADING SKILLS...
+                            {t("list.loading")}
                         </div>
                     ) : (
                         groups.map((group: any) => (
                             <div key={group.category} className="space-y-4">
                                 <h4 className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.2em] border-b border-white/5 pb-2">
-                                    {group.category}
+                                    {t(
+                                        `categories.${group.category
+                                            .toLowerCase()
+                                            .replace(/ & | /g, "_")}`
+                                    )}
                                 </h4>
                                 <div className="space-y-2">
                                     {group.skills.map((s: any) => (
@@ -162,13 +169,17 @@ export default function SkillAdminForm({
                                                 </div>
                                             }
                                             title={s.name}
-                                            subtitle={`${s.level}% Proficiency`}
+                                            subtitle={`${s.level}% ${t(
+                                                "list.proficiency"
+                                            )}`}
                                             actions={
                                                 <ListActions
                                                     onEdit={() => onEdit(s)}
                                                     onDelete={() =>
                                                         confirm(
-                                                            "Delete skill?"
+                                                            t(
+                                                                "list.confirmDelete"
+                                                            )
                                                         ) && remove(s._id)
                                                     }
                                                 />

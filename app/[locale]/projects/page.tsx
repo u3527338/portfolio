@@ -1,6 +1,6 @@
 import { workFallbackImage } from "@/lib/constant";
+import ProjectSection from "@/src/component/projects/ProjectSection";
 import { Metadata } from "next";
-import ProjectSection from "./component/ProjectSection";
 
 async function getProjects() {
     try {

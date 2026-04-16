@@ -1,5 +1,5 @@
+import ExperienceClient from "@/src/component/experience/ExperienceClient";
 import { Metadata } from "next";
-import ExperienceClient from "./component/ExperienceClient";
 
 async function getExperience() {
     try {

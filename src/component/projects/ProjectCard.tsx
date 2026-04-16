@@ -1,10 +1,10 @@
 "use client";
 
 import { studyFallbackImage, workFallbackImage } from "@/lib/constant";
+import { Link } from "@/navigation";
 import { motion } from "framer-motion";
 import { Briefcase, ExternalLink, User } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { ProjectRefButton } from "./ProjectRefButton";
 import { TechStackList } from "./TechStackList";

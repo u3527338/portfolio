@@ -1,7 +1,7 @@
 "use client";
+import { Link } from "@/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => (
     <AnimatePresence mode="wait">

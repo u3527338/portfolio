@@ -1,0 +1,41 @@
+{
+    "Navbar": {
+        "home": "Home",
+        "skills": "Skills",
+        "projects": "Projects",
+        "experience": "Experience"
+    },
+    "AdminNavbar": {
+        "skills": "Skills",
+        "projects": "Projects",
+        "experience": "Experience"
+    },
+    "Content": {
+        "intro": "Hello World,",
+        "intro2": "I am",
+        "name": "SIU CHUN KIT"
+    },
+    "AdminSkill": {
+        "form": {
+            "titleAdd": "Add New Skill",
+            "titleEdit": "Edit Skill"
+        },
+        "fields": {
+            "name": "Skill Name",
+            "iconName": "Icon Name (Si/Fa/Ai)",
+            "category": "Category",
+            "proficiency": "Proficiency"
+        },
+        "categories": {
+            "frontend_mastery": "Frontend Mastery",
+            "backend_real-time": "Backend & Real-time",
+            "database_devops": "Database & DevOps",
+            "business_automation": "Business Automation"
+        },
+        "list": {
+            "loading": "LOADING SKILLS...",
+            "proficiency": "Proficiency",
+            "confirmDelete": "Are you sure you want to delete this skill?"
+        }
+    }
+}

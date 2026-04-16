@@ -1,4 +1,4 @@
-import { deleteSkill, upsertSkill } from "@/app/admin/actions/skill";
+import { deleteSkill, upsertSkill } from "@/src/actions/skill";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useSkills(initialData?: any[]) {

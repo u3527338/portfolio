@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { upsertExperience, deleteExperience } from "@/app/admin/actions/experience";
+import { upsertExperience, deleteExperience } from "@/src/actions/experience";
 
 export function useExperiences(initialData?: any[]) {
     const queryClient = useQueryClient();

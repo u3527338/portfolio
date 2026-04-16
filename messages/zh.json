@@ -1,0 +1,31 @@
+{
+    "Navbar": {
+        "home": "首頁",
+        "skills": "技能",
+        "projects": "專案",
+        "experience": "經歷"
+    },
+    "AdminSkill": {
+        "form": {
+            "titleAdd": "新增技能項目",
+            "titleEdit": "編輯技能項目"
+        },
+        "fields": {
+            "name": "技能名稱",
+            "iconName": "圖標名稱 (Si/Fa/Ai)",
+            "category": "技術分類",
+            "proficiency": "熟練程度"
+        },
+        "categories": {
+            "frontend_mastery": "前端核心技術",
+            "backend_real-time": "後端與即時通訊",
+            "database_devops": "資料庫與運維",
+            "business_automation": "商業自動化"
+        },
+        "list": {
+            "loading": "技能載入中...",
+            "proficiency": "熟練度",
+            "confirmDelete": "確定要刪除這項技能嗎？"
+        }
+    }
+}

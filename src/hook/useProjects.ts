@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { upsertProject, deleteProject } from "@/app/admin/actions/project";
+import { upsertProject, deleteProject } from "@/src/actions/project";
 
 export function useProjects(initialData?: any[]) {
     const queryClient = useQueryClient();
