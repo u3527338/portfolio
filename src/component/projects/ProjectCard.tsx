@@ -8,6 +8,7 @@ import Image from "next/image";
 import { FaGithub } from "react-icons/fa";
 import { ProjectRefButton } from "./ProjectRefButton";
 import { TechStackList } from "./TechStackList";
+import { useTranslations } from "next-intl";
 
 export default function ProjectCard({
     project,
@@ -16,7 +17,9 @@ export default function ProjectCard({
     project: any;
     index?: number;
 }) {
-    const isWork = project?.type?.includes("Work");
+    const t = useTranslations("Project");
+
+    const isWork = project?.type?.includes("work");
     const fallbackImage = isWork ? workFallbackImage : studyFallbackImage;
     const displayImage = project?.image || fallbackImage;
     const displaySource =
@@ -64,7 +67,7 @@ export default function ProjectCard({
                         />
                     )}
                     <span className="text-[10px] font-mono font-medium text-slate-200 tracking-widest uppercase">
-                        {project?.type}{" "}
+                        {t(`categories.${project?.type}`)}{" "}
                         {isWork && displaySource && `@ ${displaySource}`}
                     </span>
                 </div>

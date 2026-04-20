@@ -50,7 +50,9 @@
                 "reference": "Reference",
                 "techStack": "Tech Stack",
                 "description": "Description"
-            }
+            },
+            "personalProject": "Personal Project",
+            "preview": "Live Preview"
         },
         "Experience": {
             "titleAdd": "Add New Experience",

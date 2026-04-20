@@ -50,7 +50,9 @@
                 "reference": "參考連結",
                 "techStack": "技術棧",
                 "description": "專案描述"
-            }
+            },
+            "personalProject": "個人專案",
+            "preview": "實時預覽"
         },
         "Experience": {
             "titleAdd": "新增經歷",

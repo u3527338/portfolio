@@ -18,7 +18,7 @@ export default function ProjectSection({
     const router = useRouter();
 
     const expQuery = searchParams.get("exp");
-    const [filter, setFilter] = useState("All");
+    const [filter, setFilter] = useState("all");
     const [selectedExpId, setSelectedExpId] = useState<string | null>(null);
 
     const experiences = useMemo(() => {

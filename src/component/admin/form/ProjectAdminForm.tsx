@@ -52,7 +52,7 @@ export default function ProjectAdminForm({
     const defaultValues: ProjectFormValues = {
         title: "",
         category: "",
-        type: "Work",
+        type: "work",
         experienceId: "",
         tech: [],
         description: "",
@@ -159,7 +159,7 @@ export default function ProjectAdminForm({
                                 label="Project.fields.relatedExp"
                                 {...register("experienceId")}
                                 options={[
-                                    { label: "Personal Project", value: "" },
+                                    { label: t("personalProject"), value: "" },
                                     ...experiences.map((e: any) => ({
                                         label: e.company,
                                         value: e._id,
@@ -262,7 +262,7 @@ export default function ProjectAdminForm({
             <div className="w-full lg:w-[380px]">
                 <div className="sticky top-24">
                     <p className="text-[10px] font-mono text-blue-500 uppercase mb-4 tracking-[0.2em]">
-                        Live Preview
+                        {t("preview")}
                     </p>
                     <ProjectCard project={previewProject as any} />
                 </div>

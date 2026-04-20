@@ -22,7 +22,9 @@ export async function upsertProject(data: any, file?: File | null) {
         let result;
         if (data._id) {
             const { _id, ...updateData } = finalData;
-            result = await ProjectModel.findByIdAndUpdate(_id, updateData, { new: true });
+            result = await ProjectModel.findByIdAndUpdate(_id, updateData, {
+                new: true,
+            });
         } else {
             result = await ProjectModel.create(finalData);
         }
@@ -39,7 +41,7 @@ export async function deleteProject(id: string) {
     try {
         await connectDB();
         await ProjectModel.findByIdAndDelete(id);
-        
+
         revalidatePath("/admin");
         revalidatePath("/projects");
         return { success: true };
