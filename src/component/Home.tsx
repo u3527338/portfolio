@@ -3,11 +3,14 @@
 import { githubProfile, gmail, linkedInProfile } from "@/lib/constant";
 import profilePic from "@/public/image/hero.png";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa";
 import Typewriter from "typewriter-effect";
 
 export default function Home() {
+    const t = useTranslations("Home");
+
     return (
         <section className="relative h-screen w-full flex items-center bg-slate-950 px-6 lg:px-32 overflow-hidden">
             <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full z-10">
@@ -37,10 +40,14 @@ export default function Home() {
                                 }}
                                 onInit={(typewriter) => {
                                     typewriter
-                                        .typeString("Hello World, ")
-                                        .typeString("<br /> I am <br/>")
+                                        .typeString(t("intro"))
                                         .typeString(
-                                            '<span style="color: #3b82f6;">SIU CHUN KIT</span>'
+                                            `<br /> ${t("intro2")} <br/>`
+                                        )
+                                        .typeString(
+                                            `<span style="color: #3b82f6;">${t(
+                                                "name"
+                                            )}</span>`
                                         )
                                         .start();
                                 }}
@@ -53,12 +60,13 @@ export default function Home() {
                             transition={{ delay: 2.5, duration: 1 }}
                             className="text-slate-400 text-lg md:text-xl max-w-lg mx-auto lg:mx-0 leading-relaxed"
                         >
-                            一名熱衷於打造極致使用者體驗的{" "}
+                            {/* 一名熱衷於打造極致使用者體驗的{" "}
                             <strong className="text-white font-medium text-inherit">
                                 {" "}
                                 Full-stack 開發者
                             </strong>
-                            。
+                            。 */}
+                            {t("description")}
                         </motion.p>
                     </div>
 

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { skillCategory } from "@/lib/constant";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
@@ -33,7 +34,7 @@ export default function SkillAdminForm({
 }: {
     initialData?: any[];
 }) {
-    const t = useTranslations("AdminSkill");
+    const t = useTranslations("Form.Skill");
     const { groups, isLoading, isPending, upsert, remove } =
         useSkills(initialData);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -79,22 +80,16 @@ export default function SkillAdminForm({
         reset(defaultValues);
     };
 
-    // 關鍵：將 Enum 字串動態轉化為符合 JSON 的 Key (如 "frontend_mastery")
-    const categoryOptions = skillSchema.shape.category.options.map((cat) => ({
-        value: cat,
-        label: t(`categories.${cat.toLowerCase().replace(/ & | /g, "_")}`),
-    }));
-
     return (
         <AdminSection
-            title={editingId ? t("form.titleEdit") : t("form.titleAdd")}
+            title={editingId ? t("titleEdit") : t("titleAdd")}
             form={
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                 >
                     <InputField
-                        label={t("fields.name")}
+                        label="Skill.fields.name"
                         {...register("name")}
                         error={errors.name?.message}
                     />
@@ -116,9 +111,10 @@ export default function SkillAdminForm({
                     </div>
 
                     <SelectField
-                        label={t("fields.category")}
+                        tag="Skill"
+                        label="Skill.fields.category"
                         {...register("category")}
-                        options={categoryOptions}
+                        options={skillCategory}
                     />
 
                     <div className="flex flex-col gap-2">

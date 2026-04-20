@@ -1,12 +1,12 @@
 "use client";
 
-import { workFallbackImage } from "@/lib/constant";
+import { projectCategory, workFallbackImage } from "@/lib/constant";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
 import {
     InputField,
-    ProjectImageUpload,
+    ImageUpload,
     SelectField,
 } from "@/src/component/admin/FormElements";
 import { ListActions } from "@/src/component/admin/ListActions";
@@ -14,6 +14,7 @@ import { useExperiences } from "@/src/hook/useExperiences";
 import { useProjects } from "@/src/hook/useProjects";
 import { useSkills } from "@/src/hook/useSkills";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -38,6 +39,7 @@ export default function ProjectAdminForm({
 }: {
     initialData?: any[];
 }) {
+    const t = useTranslations("Form.Project");
     const { projects, isLoading, isPending, upsert, remove } =
         useProjects(initialData);
     const { exps: experiences } = useExperiences();
@@ -124,14 +126,14 @@ export default function ProjectAdminForm({
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 px-6 py-10">
             <div className="flex-1 min-w-0">
                 <AdminSection
-                    title={editingId ? "Edit Project" : "Add Project"}
+                    title={editingId ? t("titleEdit") : t("titleAdd")}
                     form={
                         <form
                             onSubmit={handleSubmit(onSubmit)}
                             className="grid grid-cols-1 md:grid-cols-2 gap-6"
                         >
                             <div className="md:col-span-2">
-                                <ProjectImageUpload
+                                <ImageUpload
                                     preview={imagePreview}
                                     onFileChange={(file) => {
                                         setSelectedFile(file);
@@ -143,17 +145,18 @@ export default function ProjectAdminForm({
                                 />
                             </div>
                             <InputField
-                                label="Title"
+                                label="Project.fields.title"
                                 {...register("title")}
                                 error={errors.title?.message}
                             />
                             <InputField
-                                label="Category"
+                                label="Project.fields.category"
                                 {...register("category")}
                                 error={errors.category?.message}
                             />
                             <SelectField
-                                label="Related Experience"
+                                tag="Project"
+                                label="Project.fields.relatedExp"
                                 {...register("experienceId")}
                                 options={[
                                     { label: "Personal Project", value: "" },
@@ -164,24 +167,26 @@ export default function ProjectAdminForm({
                                 ]}
                             />
                             <SelectField
-                                label="Type"
+                                tag="Project"
+                                label="Project.fields.type"
                                 {...register("type")}
-                                options={["Work", "Self-Learning"]}
+                                options={projectCategory}
+                                translation
                             />
                             <InputField
-                                label="Github"
+                                label="Project.fields.github"
                                 {...register("githubLink")}
                                 error={errors.githubLink?.message}
                             />
                             <InputField
-                                label="Reference"
+                                label="Project.fields.reference"
                                 {...register("referenceLink")}
                                 error={errors.referenceLink?.message}
                             />
 
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-[10px] font-mono text-slate-500 uppercase">
-                                    Tech Stack
+                                    {t("fields.techStack")}
                                 </label>
                                 <div className="flex flex-wrap gap-2 p-4 bg-white/5 rounded-2xl border border-white/10 max-h-40 overflow-y-auto">
                                     {allSkills.map((skill: any) => (
@@ -207,7 +212,7 @@ export default function ProjectAdminForm({
 
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-[10px] font-mono text-slate-500 uppercase">
-                                    Description
+                                    {t("fields.description")}
                                 </label>
                                 <textarea
                                     {...register("description")}

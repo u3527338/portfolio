@@ -5,15 +5,17 @@ import ProjectAdminForm from "@/src/component/admin/form/ProjectAdminForm";
 import SkillAdminForm from "@/src/component/admin/form/SkillAdminForm";
 import { AnimatePresence, motion } from "framer-motion";
 import { Briefcase, FolderGit2, ShieldCheck, Trophy } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 export default function AdminPage() {
+    const t = useTranslations("AdminNavbar");
     const [activeTab, setActiveTab] = useState("projects");
 
     const tabs = [
-        { id: "projects", label: "Projects", icon: FolderGit2 },
-        { id: "experiences", label: "Experience", icon: Briefcase },
-        { id: "skills", label: "Skills", icon: Trophy },
+        { id: "projects", icon: FolderGit2 },
+        { id: "experience", icon: Briefcase },
+        { id: "skills", icon: Trophy },
     ];
 
     return (
@@ -59,7 +61,7 @@ export default function AdminPage() {
                                     )}
                                     <Icon size={16} className="relative z-10" />
                                     <span className="relative z-10">
-                                        {tab.label}
+                                        {t(`${tab.id}`)}
                                     </span>
                                 </button>
                             );
@@ -78,7 +80,7 @@ export default function AdminPage() {
                             className="min-h-[500px]"
                         >
                             {activeTab === "projects" && <ProjectAdminForm />}
-                            {activeTab === "experiences" && (
+                            {activeTab === "experience" && (
                                 <ExperienceAdminForm />
                             )}
                             {activeTab === "skills" && <SkillAdminForm />}

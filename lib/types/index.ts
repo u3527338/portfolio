@@ -54,9 +54,11 @@ export interface InputFieldProps
 
 export interface SelectFieldProps
     extends React.SelectHTMLAttributes<HTMLSelectElement> {
+    tag?: string;
     label: string;
     options: (string | { label: string; value: any })[];
     error?: string;
+    translation?: boolean;
 }
 
 export interface ImageUploadProps {

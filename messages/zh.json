@@ -5,27 +5,85 @@
         "projects": "專案",
         "experience": "經歷"
     },
-    "AdminSkill": {
-        "form": {
-            "titleAdd": "新增技能項目",
-            "titleEdit": "編輯技能項目"
-        },
-        "fields": {
-            "name": "技能名稱",
-            "iconName": "圖標名稱 (Si/Fa/Ai)",
-            "category": "技術分類",
-            "proficiency": "熟練程度"
-        },
+    "AdminNavbar": {
+        "skills": "技能",
+        "projects": "專案",
+        "experience": "經歷"
+    },
+    "Home": {
+        "intro": "Hello World,",
+        "intro2": "我是",
+        "name": "SIU CHUN KIT",
+        "description": "全端網頁開發者"
+    },
+    "Project": {
+        "title": "商業與個人作品",
         "categories": {
-            "frontend_mastery": "前端核心技術",
-            "backend_real-time": "後端與即時通訊",
-            "database_devops": "資料庫與運維",
-            "business_automation": "商業自動化"
+            "all": "全部",
+            "self_learning": "自主學習",
+            "work": "工作專案"
         },
-        "list": {
-            "loading": "技能載入中...",
-            "proficiency": "熟練度",
-            "confirmDelete": "確定要刪除這項技能嗎？"
+        "filter_key": "按公司篩選",
+        "scroll": "向下滑動探索"
+    },
+    "Experience": {
+        "details": "查看相關專案"
+    },
+    "Skill": {
+        "categories": {
+            "frontend_mastery": "前端開發",
+            "backend_real-time": "後端與即時通訊",
+            "database_devops": "資料庫與 DevOps",
+            "business_automation": "企業自動化"
+        }
+    },
+    "Form": {
+        "Project": {
+            "titleAdd": "新增專案",
+            "titleEdit": "編輯專案",
+            "fields": {
+                "title": "標題",
+                "category": "標籤",
+                "relatedExp": "相關經歷",
+                "type": "類型",
+                "github": "Github 連結",
+                "reference": "參考連結",
+                "techStack": "技術棧",
+                "description": "專案描述"
+            }
+        },
+        "Experience": {
+            "titleAdd": "新增經歷",
+            "titleEdit": "編輯經歷",
+            "fields": {
+                "company": "公司名稱",
+                "jobTitle": "職位名稱",
+                "abbrev": "公司簡稱",
+                "location": "地點",
+                "from": "就職開始日期",
+                "to": "工作結束日期",
+                "currentJob": "目前職位",
+                "description": "工作描述"
+            }
+        },
+        "Skill": {
+            "titleAdd": "新增技能",
+            "titleEdit": "編輯技能",
+            "fields": {
+                "name": "技能名稱",
+                "iconName": "圖示名稱 (Si/Fa/Ai)",
+                "category": "分類",
+                "proficiency": "熟練度"
+            }
+        },
+        "General": {
+            "uploadImage": "點擊選擇圖片",
+            "loading": "載入中...",
+            "save": "儲存",
+            "update": "更新",
+            "cancel": "取消",
+            "confirm": "確認",
+            "confirmDelete": "你確定要刪除這項技能嗎？"
         }
     }
 }

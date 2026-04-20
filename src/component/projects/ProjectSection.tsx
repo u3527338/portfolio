@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Layers, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
@@ -11,6 +12,8 @@ export default function ProjectSection({
 }: {
     initialProjects: any[];
 }) {
+    const t = useTranslations("Project");
+
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -31,19 +34,19 @@ export default function ProjectSection({
 
     useEffect(() => {
         if (expQuery) {
-            setFilter("Work");
+            setFilter("work");
             setSelectedExpId(expQuery);
         }
     }, [expQuery]);
 
     const filteredProjects = (initialProjects || []).filter((p) => {
         const typeMatch =
-            filter === "All" ||
+            filter === "all" ||
             p?.type === filter ||
             p?.type?.toString().includes(filter);
         if (!typeMatch) return false;
 
-        if (filter === "Work" && selectedExpId) {
+        if (filter === "work" && selectedExpId) {
             return p.experienceId?._id === selectedExpId;
         }
         return true;
@@ -52,6 +55,19 @@ export default function ProjectSection({
     const clearExpFilter = () => {
         setSelectedExpId(null);
         router.push("/projects", { scroll: false });
+    };
+
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.5 },
+        },
+    };
+
+    const item = {
+        hidden: { opacity: 0, y: 50 },
+        show: { opacity: 1, y: 0 },
     };
 
     return (
@@ -72,7 +88,7 @@ export default function ProjectSection({
                             <span className="text-blue-500">
                                 {(filteredProjects || []).length}+
                             </span>{" "}
-                            Industrial & Personal Works
+                            {t("title")}
                         </p>
                     </motion.div>
 
@@ -80,7 +96,7 @@ export default function ProjectSection({
                         className="flex gap-1 p-1 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md"
                         aria-label="Project filters"
                     >
-                        {["All", "Work", "Self-Learning"].map((tab) => (
+                        {["all", "work", "self_learning"].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => {
@@ -94,14 +110,14 @@ export default function ProjectSection({
                                         : "text-slate-400 hover:text-slate-200"
                                 }`}
                             >
-                                {tab}
+                                {t(`categories.${tab}`)}
                             </button>
                         ))}
                     </nav>
                 </div>
 
                 <AnimatePresence>
-                    {filter === "Work" && experiences.length > 0 && (
+                    {filter === "work" && experiences.length > 0 && (
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -111,7 +127,7 @@ export default function ProjectSection({
                             aria-label="Filter by company"
                         >
                             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tighter mr-2">
-                                Filter by Company:
+                                {t("filter_key")}:
                             </span>
                             {experiences.map((exp) => (
                                 <button
@@ -144,27 +160,22 @@ export default function ProjectSection({
             <div className="relative flex-1 min-h-0">
                 <div className="h-full w-full overflow-y-auto no-scrollbar py-6">
                     <motion.div
-                        layout
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-8"
                     >
-                        <AnimatePresence mode="popLayout" initial={false}>
-                            {filteredProjects.map((project, index) => (
-                                <motion.div
-                                    layout
-                                    key={project?._id}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="w-full"
-                                >
-                                    <ProjectCard
-                                        project={project}
-                                        index={index}
-                                    />
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                        {filteredProjects.map((project, index) => (
+                            <motion.div
+                                layout
+                                key={project?._id}
+                                variants={item}
+                                transition={{ type: "keyframes", duration: 1 }}
+                                className="w-full"
+                            >
+                                <ProjectCard project={project} index={index} />
+                            </motion.div>
+                        ))}
                     </motion.div>
                 </div>
             </div>
@@ -179,7 +190,7 @@ export default function ProjectSection({
                 <div className="flex gap-2 items-center text-slate-500">
                     <Layers size={14} />
                     <span className="text-[10px] uppercase font-mono tracking-widest italic animate-pulse">
-                        Scroll to explore
+                        {t("scroll")}
                     </span>
                 </div>
             </div>

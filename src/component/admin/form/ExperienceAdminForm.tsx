@@ -9,13 +9,11 @@ import * as z from "zod";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
-import {
-    InputField,
-    ProjectImageUpload,
-} from "@/src/component/admin/FormElements";
+import { InputField, ImageUpload } from "@/src/component/admin/FormElements";
 import { ListActions } from "@/src/component/admin/ListActions";
 import { officeFallbackImage } from "@/lib/constant";
 import { useExperiences } from "@/src/hook/useExperiences";
+import { useTranslations } from "next-intl";
 
 const experienceSchema = z.object({
     title: z.string().min(1, "Job title is required"),
@@ -36,6 +34,7 @@ export default function ExperienceAdminForm({
 }: {
     initialData?: any[];
 }) {
+    const t = useTranslations("Form.Experience");
     const { exps, isLoading, isPending, upsert, remove } =
         useExperiences(initialData);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -102,14 +101,14 @@ export default function ExperienceAdminForm({
 
     return (
         <AdminSection
-            title={editingId ? "Edit Experience" : "Add Experience"}
+            title={editingId ? t("titleEdit") : t("titleAdd")}
             form={
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="grid grid-cols-1 md:grid-cols-2 gap-6"
                 >
                     <div className="md:col-span-2">
-                        <ProjectImageUpload
+                        <ImageUpload
                             preview={imagePreview}
                             onFileChange={(file) => {
                                 setSelectedFile(file);
@@ -120,29 +119,29 @@ export default function ExperienceAdminForm({
                     </div>
 
                     <InputField
-                        label="Company"
+                        label="Experience.fields.company"
                         {...register("company")}
                         error={errors.company?.message}
                     />
                     <InputField
-                        label="Job Title"
+                        label="Experience.fields.jobTitle"
                         {...register("title")}
                         error={errors.title?.message}
                     />
                     <InputField
-                        label="Abbrev"
+                        label="Experience.fields.abbrev"
                         {...register("abbrev")}
                         error={errors.abbrev?.message}
                     />
                     <InputField
-                        label="Location"
+                        label="Experience.fields.location"
                         {...register("location")}
                         error={errors.location?.message}
                     />
 
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-mono text-slate-500 uppercase">
-                            From
+                            {t("fields.from")}
                         </label>
                         <input
                             type="month"
@@ -154,7 +153,7 @@ export default function ExperienceAdminForm({
                     {!isCurrent && (
                         <div className="flex flex-col gap-2">
                             <label className="text-[10px] font-mono text-slate-500 uppercase">
-                                To
+                                {t("fields.to")}
                             </label>
                             <input
                                 type="month"
@@ -175,13 +174,13 @@ export default function ExperienceAdminForm({
                             htmlFor="isCurrent"
                             className="text-xs text-slate-400"
                         >
-                            Current Job
+                            {t("fields.currentJob")}
                         </label>
                     </div>
 
                     <div className="md:col-span-2 flex flex-col gap-2">
                         <label className="text-[10px] font-mono text-slate-500 uppercase">
-                            Description
+                            {t("fields.description")}
                         </label>
                         <textarea
                             {...register("shortDesc")}
