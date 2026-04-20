@@ -58,13 +58,13 @@
             "titleAdd": "Add New Experience",
             "titleEdit": "Edit Experience",
             "fields": {
-                "company": "Company",
+                "company": "Company Name",
                 "jobTitle": "Job Title",
-                "abbrev": "Abbrev",
-                "location": "Location",
+                "abbrev": "Company Abbreviation",
+                "location": "Company Address",
                 "from": "From",
                 "to": "To",
-                "currentJob": "Current Job",
+                "currentJob": "Currently Employed",
                 "description": "Description"
             }
         },
@@ -85,7 +85,8 @@
             "update": "Update",
             "cancel": "Cancel",
             "confirm": "Confirm",
-            "confirmDelete": "Are you sure you want to delete this skill?"
+            "confirmDelete": "Are you sure you want to delete this skill?",
+            "managementList": "Management List"
         }
     }
 }

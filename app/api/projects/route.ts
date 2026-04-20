@@ -1,6 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
 import ProjectModel from "@/models/Project";
-import ExperienceModel from "@/models/Experience";
 import { NextResponse } from "next/server";
 
 export async function GET() {

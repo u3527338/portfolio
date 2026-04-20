@@ -6,12 +6,12 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { officeFallbackImage } from "@/lib/constant";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
-import { InputField, ImageUpload } from "@/src/component/admin/FormElements";
+import { ImageUpload, InputField } from "@/src/component/admin/FormElements";
 import { ListActions } from "@/src/component/admin/ListActions";
-import { officeFallbackImage } from "@/lib/constant";
 import { useExperiences } from "@/src/hook/useExperiences";
 import { useTranslations } from "next-intl";
 
@@ -112,8 +112,9 @@ export default function ExperienceAdminForm({
                             preview={imagePreview}
                             onFileChange={(file) => {
                                 setSelectedFile(file);
-                                if (file)
-                                    setImagePreview(URL.createObjectURL(file));
+                                setImagePreview(
+                                    file ? URL.createObjectURL(file) : null
+                                );
                             }}
                         />
                     </div>
@@ -124,15 +125,16 @@ export default function ExperienceAdminForm({
                         error={errors.company?.message}
                     />
                     <InputField
-                        label="Experience.fields.jobTitle"
-                        {...register("title")}
-                        error={errors.title?.message}
-                    />
-                    <InputField
                         label="Experience.fields.abbrev"
                         {...register("abbrev")}
                         error={errors.abbrev?.message}
                     />
+                    <InputField
+                        label="Experience.fields.jobTitle"
+                        {...register("title")}
+                        error={errors.title?.message}
+                    />
+
                     <InputField
                         label="Experience.fields.location"
                         {...register("location")}

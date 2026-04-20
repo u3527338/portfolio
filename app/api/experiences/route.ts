@@ -11,14 +11,3 @@ export async function GET() {
         return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
     }
 }
-
-export async function POST(request: Request) {
-    try {
-        await connectDB();
-        const body = await request.json();
-        const newExp = await ExperienceModel.create(body);
-        return NextResponse.json(newExp, { status: 201 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-}

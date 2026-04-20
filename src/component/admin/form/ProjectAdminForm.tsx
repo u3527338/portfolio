@@ -5,8 +5,8 @@ import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
 import {
-    InputField,
     ImageUpload,
+    InputField,
     SelectField,
 } from "@/src/component/admin/FormElements";
 import { ListActions } from "@/src/component/admin/ListActions";
@@ -137,10 +137,11 @@ export default function ProjectAdminForm({
                                     preview={imagePreview}
                                     onFileChange={(file) => {
                                         setSelectedFile(file);
-                                        if (file)
-                                            setImagePreview(
-                                                URL.createObjectURL(file)
-                                            );
+                                        setImagePreview(
+                                            file
+                                                ? URL.createObjectURL(file)
+                                                : null
+                                        );
                                     }}
                                 />
                             </div>
