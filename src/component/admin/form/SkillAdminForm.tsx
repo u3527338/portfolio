@@ -20,7 +20,8 @@ export default function SkillAdminForm({
 }: {
     initialData?: any[];
 }) {
-    const t = useTranslations("Form.Skill");
+    const tForm = useTranslations("Form.Skill");
+    const t = useTranslations("Skill");
     const { groups, isLoading, isPending, upsert, remove } =
         useSkills(initialData);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -28,7 +29,7 @@ export default function SkillAdminForm({
     const defaultValues: SkillFormValues = {
         name: "",
         iconName: "",
-        category: "Frontend Mastery",
+        category: "frontend_mastery",
         level: 90,
     };
 
@@ -68,7 +69,7 @@ export default function SkillAdminForm({
 
     return (
         <AdminSection
-            title={editingId ? t("titleEdit") : t("titleAdd")}
+            title={editingId ? tForm("titleEdit") : tForm("titleAdd")}
             form={
                 <form
                     onSubmit={handleSubmit(onSubmit)}
@@ -82,7 +83,7 @@ export default function SkillAdminForm({
 
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-                            {t("fields.iconName")}
+                            {tForm("fields.iconName")}
                         </label>
                         <div className="relative flex items-center">
                             <input
@@ -105,7 +106,7 @@ export default function SkillAdminForm({
 
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-                            {t("fields.proficiency")} ({watchedLevel}%)
+                            {tForm("fields.proficiency")} ({watchedLevel}%)
                         </label>
                         <input
                             type="range"
@@ -146,15 +147,17 @@ export default function SkillAdminForm({
                                             </div>
                                         }
                                         title={s.name}
-                                        subtitle={`${s.level}% ${t(
-                                            "list.proficiency"
+                                        subtitle={`${s.level}% ${tForm(
+                                            "fields.proficiency"
                                         )}`}
                                         actions={
                                             <ListActions
                                                 onEdit={() => onEdit(s)}
                                                 onDelete={() =>
                                                     confirm(
-                                                        t("list.confirmDelete")
+                                                        tForm(
+                                                            "list.confirmDelete"
+                                                        )
                                                     ) && remove(s._id)
                                                 }
                                             />

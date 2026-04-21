@@ -52,7 +52,7 @@ export default async function Page() {
     };
 
     return (
-        <div className="w-full h-full max-w-6xl mx-auto flex flex-col justify-center px-4">
+        <div className="w-full h-full max-w-6xl mx-auto flex flex-col p-4">
             <script type="application/ld+json" id="skills-jsonld">
                 {JSON.stringify(jsonLd)}
             </script>

@@ -7,7 +7,7 @@ export const projectSchema = z.object({
     experienceId: z.string().optional().or(z.literal("")),
     tech: z.array(z.string()),
     description: z.string(),
-    githubLink: z.string().url().optional().or(z.literal("")),
+    githubLink: z.url().optional().or(z.literal("")),
     referenceLink: z.string().url().optional().or(z.literal("")),
     image: z.string(),
 });

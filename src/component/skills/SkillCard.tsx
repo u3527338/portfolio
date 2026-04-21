@@ -12,7 +12,7 @@ interface SkillCardProps {
 }
 
 export const SkillCard = ({ category, skills, index }: SkillCardProps) => {
-    const t = useTranslations("Skill");
+    const t = useTranslations("Skill.categories");
 
     return (
         <motion.section
@@ -22,7 +22,7 @@ export const SkillCard = ({ category, skills, index }: SkillCardProps) => {
             className="p-5 rounded-[24px] bg-slate-900/40 border border-white/5 backdrop-blur-md hover:border-blue-500/20 transition-all group"
         >
             <h2 className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.2em] mb-4 px-1">
-                {category}
+                {t(category)}
             </h2>
 
             <ul className="space-y-4">

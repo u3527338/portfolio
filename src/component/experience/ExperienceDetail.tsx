@@ -37,7 +37,7 @@ export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => {
 
                 <div className="pointer-events-auto mt-4">
                     <Link
-                        href={`/projects?exp=${activeExp._id}`}
+                        href={`/projects?type=work&exp=${activeExp._id}`}
                         passHref
                         title={`View projects related to my experience at ${activeExp.company}`}
                     >
