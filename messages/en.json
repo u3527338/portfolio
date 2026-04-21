@@ -88,5 +88,17 @@
             "confirmDelete": "Are you sure you want to delete this skill?",
             "managementList": "Management List"
         }
+    },
+    "Login": {
+        "title": "Identity Verification",
+        "subtitle": "Admin Authorization Required",
+        "passwordPlaceholder": "Password",
+        "button": "Login",
+        "authenticating": "Verifying...",
+        "errors": {
+            "passwordRequired": "Password is required",
+            "loginFailure": "Login failed",
+            "serverError": "Something went wrong. Please try again."
+        }
     }
 }

@@ -88,5 +88,17 @@
             "confirmDelete": "你確定要刪除這項技能嗎？",
             "managementList": "管理列表"
         }
+    },
+    "Login": {
+        "title": "身份驗證",
+        "subtitle": "管理員權限限制區域",
+        "passwordPlaceholder": "請輸入密碼",
+        "button": "登入",
+        "authenticating": "驗證中...",
+        "errors": {
+            "passwordRequired": "必須輸入密碼",
+            "loginFailure": "驗證失敗",
+            "serverError": "連線發生錯誤，請稍後再試"
+        }
     }
 }
