@@ -1,10 +1,12 @@
 "use client";
 
+import { checkAuthAction } from "@/lib/helper";
 import { Link, usePathname, useRouter } from "@/navigation";
 import { motion } from "framer-motion";
 import { Briefcase, FolderGit2, Languages, Trophy, Home } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -14,7 +16,17 @@ export default function Navbar() {
     const tNavbar = useTranslations("Navbar");
     const tAdmin = useTranslations("AdminNavbar");
 
-    const isAdmin = pathname.split("/").includes("admin");
+    const [isAuthed, setIsAuthed] = useState(false);
+
+    useEffect(() => {
+        const checkStatus = async () => {
+            const authed = await checkAuthAction();
+            setIsAuthed(authed);
+        };
+        checkStatus();
+    }, [pathname]);
+
+    const isAdminMode = pathname.split("/").includes("admin") && isAuthed;
 
     const navItems = [
         { name: tNavbar("home"), href: "/" },
@@ -46,7 +58,7 @@ export default function Navbar() {
 
     return (
         <nav className="fixed top-0 w-full z-50 flex justify-center p-8">
-            {isAdmin && (
+            {pathname.includes("/admin") && (
                 <div className="absolute left-8 top-1/2 -translate-y-1/2">
                     <Link
                         href="/"
@@ -59,7 +71,7 @@ export default function Navbar() {
             )}
 
             <div className="flex items-center p-1.5 rounded-full border bg-slate-900/40 backdrop-blur-md border-white/10 relative">
-                {!isAdmin ? (
+                {!isAdminMode ? (
                     <div className="flex items-center gap-6 px-6 py-1.5">
                         {navItems.map((item) => {
                             const isActive = pathname === item.href;
@@ -68,14 +80,16 @@ export default function Navbar() {
                                     key={item.href}
                                     href={item.href}
                                     className={`text-sm font-medium transition-colors relative ${
-                                        isActive ? "text-white" : "text-slate-400 hover:text-white"
+                                        isActive
+                                            ? "text-white"
+                                            : "text-slate-400 hover:text-white"
                                     }`}
                                 >
                                     {item.name}
                                     {isActive && (
-                                        <motion.span 
+                                        <motion.span
                                             layoutId="navUnderline"
-                                            className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500" 
+                                            className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500"
                                         />
                                     )}
                                 </Link>
@@ -92,18 +106,26 @@ export default function Navbar() {
                                     key={tab.id}
                                     onClick={() => handleTabChange(tab.id)}
                                     className={`relative flex items-center gap-2 px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                                        isActive ? "text-white" : "text-slate-500 hover:text-slate-300"
+                                        isActive
+                                            ? "text-white"
+                                            : "text-slate-500 hover:text-slate-300"
                                     }`}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeTabAdmin"
                                             className="absolute inset-0 bg-blue-600 rounded-full"
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                            transition={{
+                                                type: "spring",
+                                                bounce: 0.15,
+                                                duration: 0.5,
+                                            }}
                                         />
                                     )}
                                     <Icon size={16} className="relative z-10" />
-                                    <span className="relative z-10">{tAdmin(tab.id)}</span>
+                                    <span className="relative z-10">
+                                        {tAdmin(tab.id)}
+                                    </span>
                                 </button>
                             );
                         })}

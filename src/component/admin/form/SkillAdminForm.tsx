@@ -125,53 +125,45 @@ export default function SkillAdminForm({
             }
             list={
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {isLoading ? (
-                        <div className="col-span-2 text-center p-8 text-slate-500 font-mono text-xs">
-                            {t("list.loading")}
-                        </div>
-                    ) : (
-                        groups.map((group: any) => (
-                            <div key={group.category} className="space-y-4">
-                                <h4 className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.2em] border-b border-white/5 pb-2">
-                                    {t(
-                                        `categories.${group.category
-                                            .toLowerCase()
-                                            .replace(/ & | /g, "_")}`
-                                    )}
-                                </h4>
-                                <div className="space-y-2">
-                                    {group.skills.map((s: any) => (
-                                        <AdminListCard
-                                            key={s._id}
-                                            image={
-                                                <div className="w-full h-full flex items-center justify-center bg-slate-800/50 rounded-lg text-xl">
-                                                    <IconPreview
-                                                        iconName={s.iconName}
-                                                    />
-                                                </div>
-                                            }
-                                            title={s.name}
-                                            subtitle={`${s.level}% ${t(
-                                                "list.proficiency"
-                                            )}`}
-                                            actions={
-                                                <ListActions
-                                                    onEdit={() => onEdit(s)}
-                                                    onDelete={() =>
-                                                        confirm(
-                                                            t(
-                                                                "list.confirmDelete"
-                                                            )
-                                                        ) && remove(s._id)
-                                                    }
+                    {groups.map((group: any) => (
+                        <div key={group.category} className="space-y-4">
+                            <h4 className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.2em] border-b border-white/5 pb-2">
+                                {t(
+                                    `categories.${group.category
+                                        .toLowerCase()
+                                        .replace(/ & | /g, "_")}`
+                                )}
+                            </h4>
+                            <div className="space-y-2">
+                                {group.skills.map((s: any) => (
+                                    <AdminListCard
+                                        key={s._id}
+                                        image={
+                                            <div className="w-full h-full flex items-center justify-center bg-slate-800/50 rounded-lg text-xl">
+                                                <IconPreview
+                                                    iconName={s.iconName}
                                                 />
-                                            }
-                                        />
-                                    ))}
-                                </div>
+                                            </div>
+                                        }
+                                        title={s.name}
+                                        subtitle={`${s.level}% ${t(
+                                            "list.proficiency"
+                                        )}`}
+                                        actions={
+                                            <ListActions
+                                                onEdit={() => onEdit(s)}
+                                                onDelete={() =>
+                                                    confirm(
+                                                        t("list.confirmDelete")
+                                                    ) && remove(s._id)
+                                                }
+                                            />
+                                        }
+                                    />
+                                ))}
                             </div>
-                        ))
-                    )}
+                        </div>
+                    ))}
                 </div>
             }
         />

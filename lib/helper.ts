@@ -1,3 +1,5 @@
+"use server"
+
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
@@ -12,5 +14,14 @@ export async function verifyAdmin() {
         await jwtVerify(token, secret);
     } catch (err) {
         throw new Error("INVALID_TOKEN");
+    }
+}
+
+export async function checkAuthAction() {
+    try {
+        await verifyAdmin();
+        return true;
+    } catch (error) {
+        return false;
     }
 }

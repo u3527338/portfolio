@@ -1,19 +1,42 @@
 "use client";
 
+import { checkAuthAction } from "@/lib/helper";
 import ExperienceAdminForm from "@/src/component/admin/form/ExperienceAdminForm";
 import LoginForm from "@/src/component/admin/form/LoginForm";
 import ProjectAdminForm from "@/src/component/admin/form/ProjectAdminForm";
 import SkillAdminForm from "@/src/component/admin/form/SkillAdminForm";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function AdminContent() {
+    const t = useTranslations("Login");
     const searchParams = useSearchParams();
     const activeTab = searchParams.get("tab") || "projects";
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(
+        null
+    );
+
+    useEffect(() => {
+        const initAuth = async () => {
+            const authed = await checkAuthAction();
+            setIsAuthenticated(authed);
+        };
+        initAuth();
+    }, []);
+
+    if (isAuthenticated === null) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <div className="animate-pulse font-mono text-xs text-slate-500 uppercase tracking-widest">
+                    {t("authenticating")}
+                </div>
+            </div>
+        );
+    }
 
     if (!isAuthenticated) {
         return <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />;
@@ -64,13 +87,7 @@ function AdminContent() {
 export default function AdminPage() {
     return (
         <main className="px-6 pb-12">
-            <Suspense fallback={
-                <div className="min-h-[400px] flex items-center justify-center">
-                    <div className="animate-pulse font-mono text-xs text-slate-500 uppercase tracking-widest">
-                        Initializing Security Protocol...
-                    </div>
-                </div>
-            }>
+            <Suspense fallback={null}>
                 <AdminContent />
             </Suspense>
         </main>
