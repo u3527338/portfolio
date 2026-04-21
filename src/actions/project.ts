@@ -1,5 +1,6 @@
 "use server";
 
+import { verifyAdmin } from "@/lib/helper";
 import { connectDB } from "@/lib/mongodb";
 import ProjectModel from "@/models/Project";
 import { revalidatePath } from "next/cache";
@@ -7,6 +8,8 @@ import { uploadImageAction } from "./upload";
 
 export async function upsertProject(data: any, file?: File | null) {
     try {
+        await verifyAdmin();
+
         await connectDB();
         let finalData = { ...data };
 
@@ -39,6 +42,8 @@ export async function upsertProject(data: any, file?: File | null) {
 
 export async function deleteProject(id: string) {
     try {
+        await verifyAdmin();
+
         await connectDB();
         await ProjectModel.findByIdAndDelete(id);
 

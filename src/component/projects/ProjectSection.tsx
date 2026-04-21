@@ -3,8 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Layers, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectSection({
@@ -13,13 +13,24 @@ export default function ProjectSection({
     initialProjects: any[];
 }) {
     const t = useTranslations("Project");
-
-    const searchParams = useSearchParams();
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
-    const expQuery = searchParams.get("exp");
-    const [filter, setFilter] = useState("all");
-    const [selectedExpId, setSelectedExpId] = useState<string | null>(null);
+    const filter = searchParams.get("type") || "all";
+    const selectedExpId = searchParams.get("exp");
+
+    const updateQuery = (newParams: Record<string, string | null>) => {
+        const params = new URLSearchParams(searchParams.toString());
+        Object.entries(newParams).forEach(([key, value]) => {
+            if (value === null) {
+                params.delete(key);
+            } else {
+                params.set(key, value);
+            }
+        });
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    };
 
     const experiences = useMemo(() => {
         const exps: Record<string, string> = {};
@@ -32,18 +43,12 @@ export default function ProjectSection({
         return Object.entries(exps).map(([id, name]) => ({ id, name }));
     }, [initialProjects]);
 
-    useEffect(() => {
-        if (expQuery) {
-            setFilter("work");
-            setSelectedExpId(expQuery);
-        }
-    }, [expQuery]);
-
     const filteredProjects = (initialProjects || []).filter((p) => {
         const typeMatch =
             filter === "all" ||
             p?.type === filter ||
             p?.type?.toString().includes(filter);
+
         if (!typeMatch) return false;
 
         if (filter === "work" && selectedExpId) {
@@ -52,58 +57,48 @@ export default function ProjectSection({
         return true;
     });
 
-    const clearExpFilter = () => {
-        setSelectedExpId(null);
-        router.push("/projects", { scroll: false });
-    };
-
     const container = {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
-            transition: { staggerChildren: 0.5 },
+            transition: { staggerChildren: 0.1 },
         },
     };
 
     const item = {
-        hidden: { opacity: 0, y: 50 },
+        hidden: { opacity: 0, y: 20 },
         show: { opacity: 1, y: 0 },
     };
 
     return (
-        <section
-            className="h-full w-full max-w-7xl mx-auto flex flex-col px-6"
-            aria-labelledby="projects-heading"
-        >
+        <section className="h-full w-full max-w-7xl mx-auto flex flex-col px-6">
             <div className="flex flex-col mb-8 gap-6 shrink-0">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                     >
-                        <h2 id="projects-heading" className="sr-only">
-                            Project Gallery
-                        </h2>
                         <p className="text-slate-500 font-mono text-xs uppercase tracking-widest">
                             <span className="text-blue-500">
-                                {(filteredProjects || []).length}+
+                                {filteredProjects.length}+
                             </span>{" "}
                             {t("title")}
                         </p>
                     </motion.div>
 
-                    <nav
-                        className="flex gap-1 p-1 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md"
-                        aria-label="Project filters"
-                    >
+                    <nav className="flex gap-1 p-1 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md">
                         {["all", "work", "self_learning"].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => {
-                                    setFilter(tab);
-                                    if (tab !== "Work") setSelectedExpId(null);
+                                    updateQuery({
+                                        type: tab,
+                                        exp:
+                                            tab === "work"
+                                                ? selectedExpId
+                                                : null,
+                                    });
                                 }}
-                                aria-pressed={filter === tab}
                                 className={`px-5 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
                                     filter === tab
                                         ? "bg-blue-600 text-white shadow-lg"
@@ -116,15 +111,13 @@ export default function ProjectSection({
                     </nav>
                 </div>
 
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                     {filter === "work" && experiences.length > 0 && (
                         <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="flex flex-wrap gap-2 items-center"
-                            role="group"
-                            aria-label="Filter by company"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="flex flex-wrap gap-2 items-center overflow-hidden"
                         >
                             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tighter mr-2">
                                 {t("filter_key")}:
@@ -132,8 +125,7 @@ export default function ProjectSection({
                             {experiences.map((exp) => (
                                 <button
                                     key={exp.id}
-                                    onClick={() => setSelectedExpId(exp.id)}
-                                    aria-pressed={selectedExpId === exp.id}
+                                    onClick={() => updateQuery({ exp: exp.id })}
                                     className={`px-3 py-1 rounded-lg text-[10px] border transition-all ${
                                         selectedExpId === exp.id
                                             ? "bg-blue-500/20 border-blue-500 text-blue-400"
@@ -145,9 +137,8 @@ export default function ProjectSection({
                             ))}
                             {selectedExpId && (
                                 <button
-                                    onClick={clearExpFilter}
+                                    onClick={() => updateQuery({ exp: null })}
                                     className="p-1 text-slate-500 hover:text-white transition-colors"
-                                    aria-label="Clear company filter"
                                 >
                                     <X size={14} />
                                 </button>
@@ -160,6 +151,7 @@ export default function ProjectSection({
             <div className="relative flex-1 min-h-0">
                 <div className="h-full w-full overflow-y-auto no-scrollbar py-6">
                     <motion.div
+                        key={filter + selectedExpId}
                         variants={container}
                         initial="hidden"
                         animate="show"
@@ -167,10 +159,9 @@ export default function ProjectSection({
                     >
                         {filteredProjects.map((project, index) => (
                             <motion.div
-                                layout
                                 key={project?._id}
                                 variants={item}
-                                transition={{ type: "keyframes", duration: 1 }}
+                                layout
                                 className="w-full"
                             >
                                 <ProjectCard project={project} index={index} />
@@ -180,10 +171,7 @@ export default function ProjectSection({
                 </div>
             </div>
 
-            <div
-                className="py-4 flex justify-between items-center px-2 shrink-0"
-                aria-hidden="true"
-            >
+            <div className="py-4 flex justify-between items-center px-2 shrink-0">
                 <p className="text-[10px] font-mono text-slate-600 tracking-[0.3em]">
                     TOTAL {filteredProjects.length} PROJECTS
                 </p>

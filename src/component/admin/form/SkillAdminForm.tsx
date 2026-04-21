@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { skillCategory } from "@/lib/constant";
+import { SkillFormValues, skillSchema } from "@/schema/Skill";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
@@ -14,20 +14,6 @@ import { InputField, SelectField } from "@/src/component/admin/FormElements";
 import { IconPreview } from "@/src/component/admin/IconPreview";
 import { ListActions } from "@/src/component/admin/ListActions";
 import { useSkills } from "@/src/hook/useSkills";
-
-const skillSchema = z.object({
-    name: z.string().min(1, "Skill name is required"),
-    iconName: z.string().min(1, "Icon name is required"),
-    category: z.enum([
-        "Frontend Mastery",
-        "Backend & Real-time",
-        "Database & DevOps",
-        "Business Automation",
-    ]),
-    level: z.number().min(0).max(100),
-});
-
-type SkillFormValues = z.infer<typeof skillSchema>;
 
 export default function SkillAdminForm({
     initialData,

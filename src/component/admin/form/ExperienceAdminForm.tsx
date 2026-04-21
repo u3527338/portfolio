@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import * as z from "zod";
 
 import { officeFallbackImage } from "@/lib/constant";
+import { ExperienceFormValues, experienceSchema } from "@/schema/Experience";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
@@ -14,20 +14,6 @@ import { ImageUpload, InputField } from "@/src/component/admin/FormElements";
 import { ListActions } from "@/src/component/admin/ListActions";
 import { useExperiences } from "@/src/hook/useExperiences";
 import { useTranslations } from "next-intl";
-
-const experienceSchema = z.object({
-    title: z.string().min(1, "Job title is required"),
-    company: z.string().min(1, "Company name is required"),
-    abbrev: z.string().min(1, "Abbrev required").max(15),
-    location: z.string().min(1, "Location is required"),
-    fromDate: z.string().min(1, "Start date required"),
-    toDate: z.string(),
-    isCurrent: z.boolean(),
-    shortDesc: z.string(),
-    bgImage: z.string(),
-});
-
-type ExperienceFormValues = z.infer<typeof experienceSchema>;
 
 export default function ExperienceAdminForm({
     initialData,

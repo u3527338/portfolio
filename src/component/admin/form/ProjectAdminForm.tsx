@@ -1,6 +1,7 @@
 "use client";
 
 import { projectCategory, workFallbackImage } from "@/lib/constant";
+import { ProjectFormValues, projectSchema } from "@/schema/Project";
 import { AdminListCard } from "@/src/component/admin/AdminListCard";
 import { AdminSection } from "@/src/component/admin/AdminSection";
 import { FormActions } from "@/src/component/admin/FormActions";
@@ -17,22 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import * as z from "zod";
 import ProjectCard from "../../projects/ProjectCard";
-
-const projectSchema = z.object({
-    title: z.string().min(1, "Project title is required"),
-    category: z.string().min(1, "Category is required"),
-    type: z.string().min(1),
-    experienceId: z.string().optional().or(z.literal("")),
-    tech: z.array(z.string()),
-    description: z.string(),
-    githubLink: z.string().url().optional().or(z.literal("")),
-    referenceLink: z.string().url().optional().or(z.literal("")),
-    image: z.string(),
-});
-
-type ProjectFormValues = z.infer<typeof projectSchema>;
 
 export default function ProjectAdminForm({
     initialData,
