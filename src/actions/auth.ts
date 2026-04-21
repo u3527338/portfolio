@@ -1,8 +1,8 @@
 "use server";
 
+import { LoginInput, loginSchema } from "@/schema/Login";
 import { SignJWT } from "jose";
 import { cookies } from "next/headers";
-import { LoginInput, loginSchema } from "@/schema/Login";
 
 export async function loginAction(data: LoginInput) {
     const result = loginSchema.safeParse(data);
@@ -11,8 +11,8 @@ export async function loginAction(data: LoginInput) {
     const { password } = result.data;
 
     if (password === process.env.ADMIN_PASSWORD) {
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret_32_chars_at_least");
-        
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+
         const token = await new SignJWT({ role: "admin" })
             .setProtectedHeader({ alg: "HS256" })
             .setIssuedAt()
@@ -25,7 +25,7 @@ export async function loginAction(data: LoginInput) {
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
             path: "/",
-            maxAge: 7200, 
+            maxAge: 7200,
         });
 
         return { success: true };
