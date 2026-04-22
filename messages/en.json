@@ -12,9 +12,9 @@
     },
     "Home": {
         "intro": "Hello World,",
-        "intro2": "I am",
+        "intro2": "I am ",
         "name": "SIU CHUN KIT",
-        "description": "A full stack developer"
+        "description": "Building the future, one commit at a time. Full-stack engineer obsessed with performance, automation, and crafting intelligent web systems."
     },
     "Project": {
         "title": "Industrial & Personal Works",

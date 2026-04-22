@@ -3,7 +3,7 @@
 import { checkAuthAction } from "@/lib/helper";
 import { Link, usePathname, useRouter } from "@/navigation";
 import { motion } from "framer-motion";
-import { Briefcase, FolderGit2, Languages, Trophy, Home } from "lucide-react";
+import { Briefcase, FolderGit2, Home, Languages, Trophy } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -26,8 +26,7 @@ export default function Navbar() {
         checkStatus();
     }, [pathname]);
 
-    const isAtAdminPath = pathname.includes("/admin");
-    const isAdminMode = isAtAdminPath && isAuthed;
+    const isAdminMode = pathname.includes("/admin");
 
     const navItems = [
         { name: tNavbar("home"), href: "/" },
@@ -59,7 +58,7 @@ export default function Navbar() {
 
     return (
         <nav className="fixed top-0 w-full z-50 flex justify-center p-8">
-            {isAtAdminPath && (
+            {isAdminMode && (
                 <div className="absolute left-8 top-1/2 -translate-y-1/2">
                     <Link
                         href="/"
@@ -107,32 +106,30 @@ export default function Navbar() {
                         })}
                     </div>
                 ) : (
-                    isAuthed && !isAtAdminPath && (
-                        <div className="flex items-center gap-6 px-6 py-1.5">
-                            {navItems.map((item) => {
-                                const isActive = pathname === item.href;
-                                return (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        className={`text-sm font-medium transition-colors relative ${
-                                            isActive
-                                                ? "text-white"
-                                                : "text-slate-400 hover:text-white"
-                                        }`}
-                                    >
-                                        {item.name}
-                                        {isActive && (
-                                            <motion.span
-                                                layoutId="navUnderline"
-                                                className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500"
-                                            />
-                                        )}
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    )
+                    <div className="flex items-center gap-6 px-6 py-1.5">
+                        {navItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`text-sm font-medium transition-colors relative ${
+                                        isActive
+                                            ? "text-white"
+                                            : "text-slate-400 hover:text-white"
+                                    }`}
+                                >
+                                    {item.name}
+                                    {isActive && (
+                                        <motion.span
+                                            layoutId="navUnderline"
+                                            className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500"
+                                        />
+                                    )}
+                                </Link>
+                            );
+                        })}
+                    </div>
                 )}
             </div>
 

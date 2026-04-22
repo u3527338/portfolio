@@ -41,7 +41,7 @@ export default function ProjectCard({
         >
             <meta itemProp="author" content="SIU CHUN KIT" />
 
-            <Link
+            {/* <Link
                 href={`/projects/${project?._id}`}
                 className="absolute inset-0 z-10"
                 title={`Learn more about ${project?.title}`}
@@ -49,7 +49,7 @@ export default function ProjectCard({
                 <span className="sr-only">
                     View {project?.title} project details
                 </span>
-            </Link>
+            </Link> */}
 
             <div className="absolute top-6 left-6 z-20">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10">

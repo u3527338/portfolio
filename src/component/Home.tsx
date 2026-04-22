@@ -21,7 +21,7 @@ export default function Home() {
                     className="space-y-6 lg:space-y-8 z-20"
                 >
                     <div className="space-y-4 text-center lg:text-left">
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight min-h-[2.5em] md:min-h-[1.8em] lg:min-h-[1.5em] relative">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-tight min-h-[2.5em] md:min-h-[1.8em] lg:min-h-[1.5em] relative">
                             <span className="sr-only">
                                 Hello World, I am SIU CHUN KIT - Full-stack
                                 Developer passionate about UI/UX.
@@ -42,7 +42,7 @@ export default function Home() {
                                     typewriter
                                         .typeString(t("intro"))
                                         .typeString(
-                                            `<br /> ${t("intro2")} <br/>`
+                                            `<br /> ${t("intro2")}`
                                         )
                                         .typeString(
                                             `<span style="color: #3b82f6;">${t(
