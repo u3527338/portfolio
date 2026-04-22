@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Briefcase, FolderGit2, Home, Languages, Trophy } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -17,6 +17,7 @@ export default function Navbar() {
     const tAdmin = useTranslations("AdminNavbar");
 
     const [isAuthed, setIsAuthed] = useState(false);
+    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         const checkStatus = async () => {
@@ -47,13 +48,17 @@ export default function Navbar() {
         const nextLocale = locale === "en" ? "zh" : "en";
         const currentParams = searchParams.toString();
         const queryString = currentParams ? `?${currentParams}` : "";
-        router.replace(`${pathname}${queryString}`, { locale: nextLocale });
+        startTransition(() => {
+            router.replace(`${pathname}${queryString}`, { locale: nextLocale });
+        });
     };
 
     const handleTabChange = (id: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("tab", id);
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        startTransition(() => {
+            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        });
     };
 
     return (
@@ -70,7 +75,7 @@ export default function Navbar() {
                 </div>
             )}
 
-            <div className="flex items-center p-1.5 rounded-full border bg-slate-900/40 backdrop-blur-md border-white/10 relative">
+            <div className={`flex items-center p-1.5 rounded-full border bg-slate-900/40 backdrop-blur-md border-white/10 relative transition-opacity duration-300 ${isPending ? "opacity-70" : "opacity-100"}`}>
                 {isAdminMode ? (
                     <div className="flex items-center gap-1">
                         {adminTabs.map((tab) => {
@@ -113,6 +118,7 @@ export default function Navbar() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    prefetch={true}
                                     className={`text-sm font-medium transition-colors relative ${
                                         isActive
                                             ? "text-white"
@@ -136,7 +142,8 @@ export default function Navbar() {
             <div className="absolute right-8 top-1/2 -translate-y-1/2">
                 <button
                     onClick={toggleLanguage}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-slate-900/40 hover:bg-slate-800 transition-colors text-xs font-medium text-slate-300 hover:text-white"
+                    disabled={isPending}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-slate-900/40 hover:bg-slate-800 transition-colors text-xs font-medium text-slate-300 hover:text-white disabled:opacity-50"
                 >
                     <Languages size={16} />
                     {locale === "en" ? "繁中" : "EN"}
