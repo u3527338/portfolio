@@ -22,9 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const latestCompany = experiences[0]?.company || "";
 
     return {
-        title: `工作經驗 | SIU CHUN KIT - ${latestJob}${
-            latestCompany ? ` @ ${latestCompany}` : ""
-        }`,
+        title: `Experiences | SIU CHUN KIT`,
         description: `探索 SIU CHUN KIT 的職業生涯。擁有 ${experiences.length} 段專業開發經驗，專注於解決複雜技術問題。`,
         openGraph: {
             title: `SIU CHUN KIT 的工作經驗`,

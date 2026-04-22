@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const categories = skillGroups.map((g: any) => g.category).join(", ");
 
     return {
-        title: `技術棧 | SIU CHUN KIT - 擅長 ${categories}`,
+        title: `Skills | SIU CHUN KIT`,
         description: `探索 SIU CHUN KIT 的技術能力，包括 ${categories} 等領域的專業工具與框架。`,
         keywords: [
             "Full-stack Developer Skills",

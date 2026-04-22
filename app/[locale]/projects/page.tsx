@@ -28,8 +28,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const firstProjectImage = projects[0]?.image || workFallbackImage;
 
     return {
-        title: `精選專案 | SIU CHUN KIT Portfolio (${projects.length} 個作品)`,
-        description: `探索我的全端開發作品，涵蓋 ${techStack.join(
+        title: `Projects | SIU CHUN KIT`,
+        description: `探索全端開發作品，涵蓋 ${techStack.join(
             ", "
         )} 等技術。`,
         openGraph: {
