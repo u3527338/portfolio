@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
         title: "SIU CHUN KIT | Portfolio",
         description: "Full-stack Developer Portfolio",
         icons: {
-            icon: "/portfolio.jpg",
+            icon: "/portfolio.png",
         },
     };
 }
