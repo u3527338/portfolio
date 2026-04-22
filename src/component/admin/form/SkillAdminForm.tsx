@@ -102,6 +102,7 @@ export default function SkillAdminForm({
                         label="Skill.fields.category"
                         {...register("category")}
                         options={skillCategory}
+                        translation
                     />
 
                     <div className="flex flex-col gap-2">

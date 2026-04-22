@@ -44,7 +44,7 @@ function AdminContent() {
 
     return (
         <div className="max-w-7xl mx-auto">
-            <header className="mb-12">
+            {/* <header className="mb-12">
                 <div className="space-y-1">
                     <div className="flex items-center gap-2 text-blue-500">
                         <ShieldCheck size={18} />
@@ -56,7 +56,7 @@ function AdminContent() {
                         Dashboard<span className="text-blue-600">.</span>
                     </h1>
                 </div>
-            </header>
+            </header> */}
 
             <div className="relative bg-slate-900/30 border border-white/5 rounded-[32px] p-8 backdrop-blur-sm shadow-inner">
                 <AnimatePresence mode="wait">

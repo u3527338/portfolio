@@ -16,7 +16,7 @@ export async function loginAction(data: LoginInput) {
         const token = await new SignJWT({ role: "admin" })
             .setProtectedHeader({ alg: "HS256" })
             .setIssuedAt()
-            .setExpirationTime("2h")
+            .setExpirationTime("15min")
             .sign(secret);
 
         const cookieStore = await cookies();

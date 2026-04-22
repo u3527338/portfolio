@@ -109,7 +109,7 @@ export default function ProjectAdminForm({
     };
 
     return (
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 px-6 py-10">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
             <div className="flex-1 min-w-0">
                 <AdminSection
                     title={editingId ? t("titleEdit") : t("titleAdd")}

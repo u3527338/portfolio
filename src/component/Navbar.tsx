@@ -26,7 +26,8 @@ export default function Navbar() {
         checkStatus();
     }, [pathname]);
 
-    const isAdminMode = pathname.split("/").includes("admin") && isAuthed;
+    const isAtAdminPath = pathname.includes("/admin");
+    const isAdminMode = isAtAdminPath && isAuthed;
 
     const navItems = [
         { name: tNavbar("home"), href: "/" },
@@ -58,7 +59,7 @@ export default function Navbar() {
 
     return (
         <nav className="fixed top-0 w-full z-50 flex justify-center p-8">
-            {pathname.includes("/admin") && (
+            {isAtAdminPath && (
                 <div className="absolute left-8 top-1/2 -translate-y-1/2">
                     <Link
                         href="/"
@@ -71,32 +72,7 @@ export default function Navbar() {
             )}
 
             <div className="flex items-center p-1.5 rounded-full border bg-slate-900/40 backdrop-blur-md border-white/10 relative">
-                {!isAdminMode ? (
-                    <div className="flex items-center gap-6 px-6 py-1.5">
-                        {navItems.map((item) => {
-                            const isActive = pathname === item.href;
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`text-sm font-medium transition-colors relative ${
-                                        isActive
-                                            ? "text-white"
-                                            : "text-slate-400 hover:text-white"
-                                    }`}
-                                >
-                                    {item.name}
-                                    {isActive && (
-                                        <motion.span
-                                            layoutId="navUnderline"
-                                            className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500"
-                                        />
-                                    )}
-                                </Link>
-                            );
-                        })}
-                    </div>
-                ) : (
+                {isAdminMode ? (
                     <div className="flex items-center gap-1">
                         {adminTabs.map((tab) => {
                             const Icon = tab.icon;
@@ -130,6 +106,33 @@ export default function Navbar() {
                             );
                         })}
                     </div>
+                ) : (
+                    isAuthed && !isAtAdminPath && (
+                        <div className="flex items-center gap-6 px-6 py-1.5">
+                            {navItems.map((item) => {
+                                const isActive = pathname === item.href;
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`text-sm font-medium transition-colors relative ${
+                                            isActive
+                                                ? "text-white"
+                                                : "text-slate-400 hover:text-white"
+                                        }`}
+                                    >
+                                        {item.name}
+                                        {isActive && (
+                                            <motion.span
+                                                layoutId="navUnderline"
+                                                className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500"
+                                            />
+                                        )}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    )
                 )}
             </div>
 
