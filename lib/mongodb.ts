@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
-
+console.log("Current Environment Keys:", Object.keys(process.env).filter(key => key.includes('MONGO')));
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable');
 }
