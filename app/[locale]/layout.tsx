@@ -1,4 +1,6 @@
 import Navbar from "@/src/component/Navbar";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -53,6 +55,9 @@ export default async function RootLayout({
                             {children}
                         </div>
                     </main>
+
+                    <Analytics />
+                    <SpeedInsights />
                 </NextIntlClientProvider>
             </body>
         </html>
