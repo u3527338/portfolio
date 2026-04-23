@@ -100,5 +100,8 @@
             "loginFailure": "Login failed",
             "serverError": "Something went wrong. Please try again."
         }
+    },
+    "General": {
+        "loading": "LOADING..."
     }
 }

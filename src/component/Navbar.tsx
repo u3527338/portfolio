@@ -57,7 +57,9 @@ export default function Navbar() {
         const params = new URLSearchParams(searchParams.toString());
         params.set("tab", id);
         startTransition(() => {
-            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+            router.replace(`${pathname}?${params.toString()}`, {
+                scroll: false,
+            });
         });
     };
 
@@ -75,7 +77,11 @@ export default function Navbar() {
                 </div>
             )}
 
-            <div className={`flex items-center p-1.5 rounded-full border bg-slate-900/40 backdrop-blur-md border-white/10 relative transition-opacity duration-300 ${isPending ? "opacity-70" : "opacity-100"}`}>
+            <div
+                className={`flex items-center p-1.5 rounded-full border bg-slate-900/40 backdrop-blur-md border-white/10 relative transition-opacity duration-300 ${
+                    isPending ? "opacity-70" : "opacity-100"
+                }`}
+            >
                 {isAdminMode ? (
                     <div className="flex items-center gap-1">
                         {adminTabs.map((tab) => {

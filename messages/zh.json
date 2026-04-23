@@ -100,5 +100,8 @@
             "loginFailure": "驗證失敗",
             "serverError": "連線發生錯誤，請稍後再試"
         }
+    },
+    "General": {
+        "loading": "載入中..."
     }
 }

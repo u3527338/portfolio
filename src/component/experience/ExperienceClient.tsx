@@ -1,61 +1,46 @@
-"use client";
+import ExperienceSection from "./ExperienceSection";
 
-import { useState } from "react";
-import { ExperienceBackground } from "./ExperienceBackground";
-import { ExperienceDetail } from "./ExperienceDetail";
-import { ExperienceTree } from "./ExperienceTree";
-
-export default function ExperienceClient({
-    experiences,
-}: {
-    experiences: any[];
-}) {
-    const [activeExp, setActiveExp] = useState(experiences[0] || null);
-
-    if (!activeExp && experiences.length === 0) {
-        return (
-            <div className="text-white p-10">No experience records found.</div>
+async function getExperience() {
+    try {
+        const res = await fetch(
+            `${
+                process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+            }/api/experiences`,
+            {
+                next: { revalidate: 3600 },
+            }
         );
+        if (!res.ok) throw new Error();
+        return res.json();
+    } catch (e) {
+        return [];
     }
+}
+
+export default async function ExperienceClient() {
+    const experiences = await getExperience();
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "SIU CHUN KIT's Work Experience",
+        itemListElement: experiences.map((exp: any, index: number) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+                "@type": "Organization",
+                name: exp.company,
+                description: exp.description,
+            },
+        })),
+    };
 
     return (
-        <section className="relative h-screen w-full bg-slate-950 overflow-hidden flex items-center">
-            <ExperienceBackground
-                activeBg={activeExp?.bgImage}
-                activeCompanyName={activeExp?.company}
-            />
-
-            <div className="relative z-10 w-full h-full flex flex-col lg:flex-row justify-between px-6 lg:px-20">
-                <div className="w-full lg:w-1/3 flex flex-col justify-start lg:justify-center h-auto lg:h-full pt-10 lg:pt-0">
-                    <div className="lg:overflow-y-auto no-scrollbar pr-0 lg:pr-4 py-4">
-                        <ExperienceTree
-                            experiences={experiences}
-                            activeId={activeExp?._id}
-                            onHover={setActiveExp}
-                        />
-                    </div>
-                </div>
-
-                <div className="w-full lg:w-1/2 flex justify-end items-end pb-12 lg:pb-32 flex-1 min-h-0">
-                    <ExperienceDetail activeExp={activeExp} />
-                </div>
-            </div>
-
-            <div className="sr-only" aria-hidden="false">
-                {experiences.map((exp) => (
-                    <article key={exp._id} id={`seo-exp-${exp._id}`}>
-                        <h2>{exp.title}</h2>
-                        <h3>{exp.company}</h3>
-                        <p>{exp.description}</p>
-                        <ul>
-                            {exp.bullets?.map((point: string, idx: number) => (
-                                <li key={idx}>{point}</li>
-                            ))}
-                        </ul>
-                        <footer>Stack: {exp.techStack?.join(", ")}</footer>
-                    </article>
-                ))}
-            </div>
-        </section>
+        <>
+            <script type="application/ld+json" id="experience-jsonld">
+                {JSON.stringify(jsonLd)}
+            </script>
+            <ExperienceSection experiences={experiences} />
+        </>
     );
 }

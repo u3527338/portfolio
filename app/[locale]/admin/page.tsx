@@ -5,6 +5,7 @@ import ExperienceAdminForm from "@/src/component/admin/form/ExperienceAdminForm"
 import LoginForm from "@/src/component/admin/form/LoginForm";
 import ProjectAdminForm from "@/src/component/admin/form/ProjectAdminForm";
 import SkillAdminForm from "@/src/component/admin/form/SkillAdminForm";
+import PageLoader from "@/src/component/PageLoader";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -44,20 +45,6 @@ function AdminContent() {
 
     return (
         <div className="max-w-7xl mx-auto">
-            {/* <header className="mb-12">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-blue-500">
-                        <ShieldCheck size={18} />
-                        <span className="text-[10px] font-mono uppercase tracking-[0.3em]">
-                            Secure Admin Environment
-                        </span>
-                    </div>
-                    <h1 className="text-4xl font-bold tracking-tight text-white">
-                        Dashboard<span className="text-blue-600">.</span>
-                    </h1>
-                </div>
-            </header> */}
-
             <div className="relative bg-slate-900/30 border border-white/5 rounded-[32px] p-8 backdrop-blur-sm shadow-inner">
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -87,7 +74,7 @@ function AdminContent() {
 export default function AdminPage() {
     return (
         <main className="px-6 pb-12">
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
                 <AdminContent />
             </Suspense>
         </main>
