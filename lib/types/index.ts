@@ -42,10 +42,6 @@ export interface Project {
     link?: string;
 }
 
-export type IconMapType = {
-    [key: string]: ReactNode;
-};
-
 export interface InputFieldProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
     label: string;

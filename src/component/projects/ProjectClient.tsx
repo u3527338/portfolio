@@ -7,7 +7,7 @@ async function getProjects() {
             `${
                 process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
             }/api/projects`,
-            { next: { revalidate: 3600 } }
+            { next: { tags: ["projects"] } }
         );
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();

@@ -7,7 +7,7 @@ async function getExperience() {
                 process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
             }/api/experiences`,
             {
-                next: { revalidate: 3600 },
+                next: { tags: ["experience"] },
             }
         );
         if (!res.ok) throw new Error();
