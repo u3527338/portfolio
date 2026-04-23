@@ -38,7 +38,9 @@ export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => {
                             whileTap={{ scale: 0.95 }}
                             className="flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg"
                         >
-                            <span className="text-[10px] tracking-widest uppercase">{t("details")}</span>
+                            <span className="text-[10px] tracking-widest uppercase">
+                                {t("details")}
+                            </span>
                             <ArrowRight size={16} />
                         </motion.div>
                     </Link>
