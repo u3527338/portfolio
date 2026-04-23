@@ -78,7 +78,7 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="fixed top-0 w-full z-50 flex items-center justify-between p-6 md:p-8">
+            <nav className="fixed top-0 w-full z-50 flex items-center justify-between p-4 md:p-6">
                 <div className="flex-1 flex justify-start">
                     {isAdminMode && (
                         <Link

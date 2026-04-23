@@ -1,11 +1,20 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Layers, X } from "lucide-react";
+import { Layers, Loader2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import ProjectCard from "./ProjectCard";
+
+const SkeletonCard = () => (
+    <div className="w-full h-[320px] rounded-3xl bg-slate-800/20 animate-pulse border border-white/5 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+            <Loader2 className="text-slate-700 animate-spin" size={20} />
+            <div className="w-20 h-2 bg-slate-800 rounded-full" />
+        </div>
+    </div>
+);
 
 export default function ProjectSection({
     initialProjects = [],
@@ -17,26 +26,44 @@ export default function ProjectSection({
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const filter = searchParams?.get("type") || "all";
-    const selectedExpId = searchParams?.get("exp") || null;
+    const [isPending, startTransition] = useTransition();
 
-    const updateQuery = (newParams: Record<string, string | null>) => {
+    const [activeFilter, setActiveFilter] = useState(
+        searchParams?.get("type") || "all"
+    );
+    const [activeExpId, setActiveExpId] = useState(
+        searchParams?.get("exp") || null
+    );
+    useEffect(() => {
+        setActiveFilter(searchParams?.get("type") || "all");
+        setActiveExpId(searchParams?.get("exp") || null);
+    }, [searchParams]);
+
+    const updateQuery = (type: string, exp: string | null) => {
+        setActiveFilter(type);
+        setActiveExpId(exp);
+
         const params = new URLSearchParams(searchParams.toString());
-        Object.entries(newParams).forEach(([key, value]) => {
-            if (value === null) {
-                params.delete(key);
-            } else {
-                params.set(key, value);
-            }
+        params.set("type", type);
+        if (exp === null) {
+            params.delete("exp");
+        } else {
+            params.set("exp", exp);
+        }
+
+        startTransition(() => {
+            router.replace(`${pathname}?${params.toString()}`, {
+                scroll: false,
+            });
         });
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     };
 
     const experiences = useMemo(() => {
         const exps: Record<string, string> = {};
         initialProjects.forEach((p) => {
             if (p.experienceId?._id) {
-                exps[p.experienceId._id] = p.experienceId.company || p.experienceId.abbrev;
+                exps[p.experienceId._id] =
+                    p.experienceId.company || p.experienceId.abbrev;
             }
         });
         return Object.entries(exps).map(([id, name]) => ({ id, name }));
@@ -44,69 +71,89 @@ export default function ProjectSection({
 
     const filteredProjects = useMemo(() => {
         if (!initialProjects.length) return [];
-        
         return initialProjects.filter((p) => {
             const typeMatch =
-                filter === "all" ||
-                p?.type === filter ||
-                p?.type?.toString().includes(filter);
+                activeFilter === "all" ||
+                p?.type === activeFilter ||
+                p?.type?.toString().includes(activeFilter);
 
             if (!typeMatch) return false;
 
-            if (filter === "work" && selectedExpId) {
-                return p.experienceId?._id === selectedExpId;
+            if (activeFilter === "work" && activeExpId) {
+                return p.experienceId?._id === activeExpId;
             }
             return true;
         });
-    }, [initialProjects, filter, selectedExpId]);
-
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 },
-        },
-    };
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 },
-    };
+    }, [initialProjects, activeFilter, activeExpId]);
 
     return (
         <section className="h-full w-full max-w-7xl mx-auto flex flex-col px-6">
             <div className="flex flex-col mb-8 gap-6 shrink-0">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                        <p className="text-slate-500 font-mono text-xs uppercase tracking-widest">
-                            <span className="text-blue-500">{filteredProjects.length}+</span> {t("title")}
+                    <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <p className="text-slate-500 font-mono text-xs uppercase tracking-widest flex items-center gap-3">
+                            {isPending ? (
+                                <Loader2
+                                    size={14}
+                                    className="animate-spin text-blue-500"
+                                />
+                            ) : (
+                                <span className="text-blue-500 font-bold">
+                                    {filteredProjects.length}
+                                </span>
+                            )}
+                            {t("title")}
                         </p>
                     </motion.div>
 
                     <nav className="flex gap-1 p-1 rounded-2xl bg-slate-900/50 border border-white/5 backdrop-blur-md">
-                        {["all", "work", "self_learning"].map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => updateQuery({ type: tab, exp: tab === "work" ? selectedExpId : null })}
-                                className={`px-5 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
-                                    filter === tab
-                                        ? "bg-blue-600 text-white shadow-lg"
-                                        : "text-slate-400 hover:text-slate-200"
-                                }`}
-                            >
-                                {t(`categories.${tab}`)}
-                            </button>
-                        ))}
+                        {["all", "work", "self_learning"].map((tab) => {
+                            const isCurrent = activeFilter === tab;
+                            return (
+                                <button
+                                    key={tab}
+                                    onClick={() =>
+                                        updateQuery(
+                                            tab,
+                                            tab === "work" ? activeExpId : null
+                                        )
+                                    }
+                                    className={`relative px-5 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${
+                                        isCurrent
+                                            ? "text-white"
+                                            : "text-slate-500 hover:text-slate-300"
+                                    }`}
+                                >
+                                    {isCurrent && (
+                                        <motion.div
+                                            layoutId="activeTab"
+                                            className="absolute inset-0 bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20"
+                                            transition={{
+                                                type: "spring",
+                                                bounce: 0.2,
+                                                duration: 0.6,
+                                            }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">
+                                        {t(`categories.${tab}`)}
+                                    </span>
+                                </button>
+                            );
+                        })}
                     </nav>
                 </div>
 
                 <AnimatePresence mode="wait">
-                    {filter === "work" && experiences.length > 0 && (
+                    {activeFilter === "work" && experiences.length > 0 && (
                         <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="flex flex-wrap gap-2 items-center overflow-hidden"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="flex flex-wrap gap-2 items-center"
                         >
                             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tighter mr-2">
                                 {t("filter_key")}:
@@ -114,9 +161,9 @@ export default function ProjectSection({
                             {experiences.map((exp) => (
                                 <button
                                     key={exp.id}
-                                    onClick={() => updateQuery({ exp: exp.id })}
+                                    onClick={() => updateQuery("work", exp.id)}
                                     className={`px-3 py-1 rounded-lg text-[10px] border transition-all ${
-                                        selectedExpId === exp.id
+                                        activeExpId === exp.id
                                             ? "bg-blue-500/20 border-blue-500 text-blue-400"
                                             : "bg-white/5 border-white/10 text-slate-400 hover:border-white/30"
                                     }`}
@@ -124,8 +171,11 @@ export default function ProjectSection({
                                     {exp.name}
                                 </button>
                             ))}
-                            {selectedExpId && (
-                                <button onClick={() => updateQuery({ exp: null })} className="p-1 text-slate-500 hover:text-white transition-colors">
+                            {activeExpId && (
+                                <button
+                                    onClick={() => updateQuery("work", null)}
+                                    className="p-1 text-slate-500 hover:text-white transition-colors"
+                                >
                                     <X size={14} />
                                 </button>
                             )}
@@ -137,28 +187,61 @@ export default function ProjectSection({
             <div className="relative flex-1 min-h-0">
                 <div className="h-full w-full overflow-y-auto no-scrollbar py-6">
                     <motion.div
-                        variants={container}
-                        initial="hidden"
-                        animate="show"
+                        layout
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-8"
                     >
-                        {filteredProjects.map((project, index) => (
-                            <motion.div key={project?._id} variants={item} layout className="w-full">
-                                <ProjectCard project={project} index={index} />
-                            </motion.div>
-                        ))}
+                        <AnimatePresence mode="popLayout">
+                            {isPending
+                                ? Array.from({ length: 6 }).map((_, i) => (
+                                      <motion.div
+                                          key={`skeleton-${i}`}
+                                          initial={{ opacity: 0 }}
+                                          animate={{ opacity: 1 }}
+                                          exit={{ opacity: 0 }}
+                                      >
+                                          <SkeletonCard />
+                                      </motion.div>
+                                  ))
+                                : filteredProjects.map((project, index) => (
+                                      <motion.div
+                                          key={project?._id}
+                                          layout
+                                          initial={{ opacity: 0, scale: 0.9 }}
+                                          animate={{ opacity: 1, scale: 1 }}
+                                          exit={{ opacity: 0, scale: 0.9 }}
+                                          transition={{
+                                              duration: 0.4,
+                                              type: "spring",
+                                              bounce: 0,
+                                          }}
+                                          className="w-full"
+                                      >
+                                          <ProjectCard
+                                              project={project}
+                                              index={index}
+                                          />
+                                      </motion.div>
+                                  ))}
+                        </AnimatePresence>
                     </motion.div>
                 </div>
             </div>
 
-            <div className="py-4 flex justify-between items-center px-2 shrink-0">
-                <p className="text-[10px] font-mono text-slate-600 tracking-[0.3em]">
-                    TOTAL {filteredProjects.length} PROJECTS
+            <div className="py-4 flex justify-between items-center px-2 shrink-0 border-t border-white/5">
+                <p className="text-[10px] font-mono text-slate-600 tracking-[0.3em] uppercase">
+                    {isPending
+                        ? "Syncing Data..."
+                        : `Total Output: ${filteredProjects.length}`}
                 </p>
                 <div className="flex gap-2 items-center text-slate-500">
-                    <Layers size={14} />
-                    <span className="text-[10px] uppercase font-mono tracking-widest italic animate-pulse">
-                        {t("scroll")}
+                    <Layers
+                        size={14}
+                        className={
+                            isPending ? "animate-spin text-blue-500" : ""
+                        }
+                    />
+                    <span className="text-[10px] uppercase font-mono tracking-widest italic">
+                        {isPending ? "Loading Grid" : t("scroll")}
                     </span>
                 </div>
             </div>

@@ -50,7 +50,7 @@ export default async function RootLayout({
                     </Suspense>
 
                     <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                        <div className="h-28 w-full flex-none" />
+                        <div className="h-20 w-full flex-none" />
                         <div className="flex-1 relative min-h-0 overflow-y-auto">
                             {children}
                         </div>
