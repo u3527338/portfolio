@@ -12,45 +12,34 @@ export const ExperienceDetail = ({ activeExp }: { activeExp: any }) => {
         <AnimatePresence mode="wait">
             <motion.div
                 key={activeExp._id}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                role="region"
-                aria-label={`${activeExp.company} experience detail`}
-                className="max-w-xl text-right flex flex-col items-end gap-6 pointer-events-none"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="w-full flex flex-col items-end gap-3"
             >
-                <div
-                    className="h-[2px] w-12 bg-blue-500 rounded-full"
-                    aria-hidden="true"
-                />
+                <div className="h-[2px] w-12 bg-blue-500 rounded-full shrink-0" />
 
-                <blockquote className="space-y-2">
-                    <h2 className="sr-only">
-                        {activeExp.title} at {activeExp.company}
-                    </h2>
-                    <p className="text-xl md:text-3xl font-light text-slate-100 leading-tight italic tracking-tight">
-                        <span className="text-blue-500 opacity-50 mr-1">"</span>
-                        {activeExp.shortDesc}
-                        <span className="text-blue-500 opacity-50 ml-1">"</span>
-                    </p>
-                </blockquote>
+                <div className="w-full">
+                    <blockquote className="space-y-2">
+                        <p className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extralight text-slate-100 leading-tight italic text-right break-words">
+                            <span className="text-blue-500 opacity-50">"</span>
+                            {activeExp.shortDesc}
+                            <span className="text-blue-500 opacity-50">"</span>
+                        </p>
+                    </blockquote>
+                </div>
 
-                <div className="pointer-events-auto mt-4">
+                <div className="shrink-0 pt-2">
                     <Link
                         href={`/projects?type=work&exp=${activeExp._id}`}
-                        passHref
-                        title={`View projects related to my experience at ${activeExp.company}`}
+                        className="inline-block"
                     >
                         <motion.div
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="flex items-center gap-3 px-8 py-3 bg-white/10 hover:bg-blue-600 text-white border border-white/10 rounded-full font-bold backdrop-blur-md transition-all cursor-pointer group shadow-2xl"
+                            className="flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg"
                         >
-                            {t("details")}{" "}
-                            <ArrowRight
-                                size={18}
-                                className="group-hover:translate-x-2 transition-transform"
-                            />
+                            <span className="text-[10px] tracking-widest uppercase">{t("details")}</span>
+                            <ArrowRight size={16} />
                         </motion.div>
                     </Link>
                 </div>
