@@ -7,11 +7,14 @@ async function getProjects() {
             `${
                 process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
             }/api/projects`,
-            { next: { tags: ["projects"] } }
+            {
+                next: { tags: ["projects"] },
+            }
         );
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();
     } catch (e) {
+        console.error("Fetch projects error:", e);
         return [];
     }
 }
@@ -35,7 +38,9 @@ export default async function ProjectClient() {
                 image: project.image || workFallbackImage,
                 url: project.referenceLink || project.githubLink || "",
                 genre: project.category,
-                keywords: project.tech?.join(", "),
+                keywords: Array.isArray(project.tech)
+                    ? project.tech.join(", ")
+                    : "",
             },
         })),
     };
