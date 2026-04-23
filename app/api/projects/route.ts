@@ -1,4 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
+import "@/models/Experience";
 import ProjectModel from "@/models/Project";
 import { NextResponse } from "next/server";
 
