@@ -6,15 +6,7 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import ProjectCard from "./ProjectCard";
-
-const SkeletonCard = () => (
-    <div className="w-full h-[320px] rounded-3xl bg-slate-800/20 animate-pulse border border-white/5 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-2">
-            <Loader2 className="text-slate-700 animate-spin" size={20} />
-            <div className="w-20 h-2 bg-slate-800 rounded-full" />
-        </div>
-    </div>
-);
+import { SkeletonCard } from "./SkeletonCard";
 
 export default function ProjectSection({
     initialProjects = [],

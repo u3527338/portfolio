@@ -11,7 +11,6 @@ async function getProjects() {
                 next: { tags: ["projects"] },
             }
         );
-        console.log(res)
         if (!res.ok) throw new Error("Failed to fetch data");
         return res.json();
     } catch (e) {
